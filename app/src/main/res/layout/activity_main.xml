@@ -10,7 +10,7 @@
 
     <ImageView android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:src="@drawable/ic_splashicon"
+               android:src="@drawable/ic_splash"
                app:layout_constraintTop_toTopOf="parent"
                android:layout_marginTop="100dp"
                app:layout_constraintBottom_toBottomOf="parent"
@@ -18,18 +18,17 @@
                android:layout_marginEnd="10dp"
                app:layout_constraintStart_toStartOf="parent"
                android:layout_marginStart="10dp"
-               android:id="@+id/appCompatImageView"
                app:layout_constraintVertical_bias="0.2" android:layout_margin="10dp"
-               android:layout_marginBottom="100dp"/>
+               android:layout_marginBottom="100dp" android:id="@+id/logo"/>
     <TextView
             android:text="@string/app_name"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" android:id="@+id/textView4"
+            android:layout_height="wrap_content" android:id="@+id/appName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" android:textSize="40sp" android:textAlignment="center"
-            app:layout_constraintHorizontal_bias="1.0" android:fontFamily="sans-serif-thin"
+            app:layout_constraintHorizontal_bias="0.0" android:fontFamily="sans-serif-thin"
             android:textColor="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="@+id/appCompatImageView" app:layout_constraintVertical_bias="0.967"
-            app:layout_constraintTop_toTopOf="@+id/appCompatImageView"/>
+            app:layout_constraintBottom_toBottomOf="@+id/logo" app:layout_constraintVertical_bias="0.967"
+            app:layout_constraintTop_toTopOf="@+id/logo"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
