@@ -13,7 +13,7 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static int SPLASH_SCREEN_TIMOUT = 3500;
+    private static int SPLASH_SCREEN_TIMOUT = 3000;
 
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
