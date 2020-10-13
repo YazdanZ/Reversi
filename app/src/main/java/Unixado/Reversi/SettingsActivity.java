@@ -47,9 +47,43 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed () {
-        super.onBackPressed ();
+    public void onBackPressed() {
 
+        final LinearLayout rootLayout = findViewById ( R.id.settingsLayout );
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int cx = getDips ( (float) 25.5 );
+            int cy = getDips ( (float) 25.5  );
+            float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
+            Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, finalRadius, 0);
+
+            circularReveal.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    rootLayout.setVisibility(View.INVISIBLE);
+                    finish();
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+            circularReveal.setDuration(400);
+            circularReveal.start();
+        }else{
+            super.onBackPressed();
+        }
     }
 
     private void circularRevealActivity() {
