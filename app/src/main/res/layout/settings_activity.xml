@@ -3,11 +3,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        android:id="@+id/settingsLayout">
+        android:id="@+id/settingsLayout" style="@style/AppTheme">
     <TextView
             android:text="Settings"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:id="@+id/textView2"
+            android:layout_height="729dp" android:id="@+id/textView2"
             android:fontFamily="sans-serif-condensed-light" android:textSize="36sp"
             android:layout_gravity="center|center_horizontal|center_vertical"
             android:gravity="center_horizontal|center_vertical"/>
