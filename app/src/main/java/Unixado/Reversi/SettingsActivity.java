@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // create the animator for this view (the start radius is zero)
         Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, 0, finalRadius);
-        circularReveal.setDuration(1000);
+        circularReveal.setDuration(500);
 
         // make the view visible and start the animation
         rootLayout.setVisibility( View.VISIBLE);
