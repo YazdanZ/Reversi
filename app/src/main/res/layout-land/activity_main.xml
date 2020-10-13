@@ -28,8 +28,8 @@
             app:layout_constraintStart_toStartOf="parent" android:textSize="40sp" android:textAlignment="center"
             app:layout_constraintHorizontal_bias="0.0" android:fontFamily="sans-serif-thin"
             android:textColor="@color/colorPrimary"
-            app:layout_constraintVertical_bias="0.74"
-            app:layout_constraintBottom_toTopOf="@+id/playButton" app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintVertical_bias="0.812"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="@+id/logo"/>
     <Button
             android:layout_width="35dp"
             android:layout_height="35dp" android:id="@+id/settingsButton"
