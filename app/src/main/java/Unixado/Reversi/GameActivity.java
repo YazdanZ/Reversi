@@ -65,11 +65,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private int getDips (float dps) {
-        Resources ressources = getResources ();
+        Resources resources = getResources ();
         return (int) TypedValue.applyDimension (
                 TypedValue.COMPLEX_UNIT_DIP,
                 dps,
-                ressources.getDisplayMetrics ()
+                resources.getDisplayMetrics ()
         );
     }
 }

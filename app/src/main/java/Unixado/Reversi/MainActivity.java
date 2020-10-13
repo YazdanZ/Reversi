@@ -43,11 +43,22 @@ public class MainActivity extends AppCompatActivity {
             }
         } );
 
+        settingsButton.setOnClickListener ( new View.OnClickListener () {
+            @Override
+            public void onClick ( View v ) {
+                openSettingsActivity ();
+            }
+        } );
     }
 
     private void openGameActivity(){
         Intent intent = new Intent (MainActivity.this, GameActivity.class);
         startActivity ( intent );
         finish ();
+    }
+
+    private void openSettingsActivity(){
+        Intent intent = new Intent (MainActivity.this, SettingsActivity.class);
+        startActivity ( intent );
     }
 }
