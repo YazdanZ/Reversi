@@ -1,7 +1,9 @@
 package Unixado.Reversi;
 
 import android.animation.Animator;
+import android.content.res.Resources;
 import android.os.Build;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
@@ -47,7 +49,9 @@ public class GameActivity extends AppCompatActivity {
 
         ConstraintLayout rootLayout = findViewById ( R.id.rootLayout );
         int cx = rootLayout.getWidth() / 2;
-        int cy = rootLayout.getHeight() / 2;
+
+        // 64.5 dps is the dps of the center of the play button from the bottom of the screen
+        int cy = rootLayout.getHeight() - getDips( (float) 64.5 );
 
         float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
 
@@ -58,5 +62,14 @@ public class GameActivity extends AppCompatActivity {
         // make the view visible and start the animation
         rootLayout.setVisibility( View.VISIBLE);
         circularReveal.start();
+    }
+
+    private int getDips (float dps) {
+        Resources ressources = getResources ();
+        return (int) TypedValue.applyDimension (
+                TypedValue.COMPLEX_UNIT_DIP,
+                dps,
+                ressources.getDisplayMetrics ()
+        );
     }
 }
