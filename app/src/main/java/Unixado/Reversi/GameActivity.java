@@ -9,6 +9,7 @@ import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class GameActivity extends AppCompatActivity {
+
+    private ImageView[][] board;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,12 @@ public class GameActivity extends AppCompatActivity {
                 });
             }
         }
+//TODO : put all board cells in the array
+//        for (int row = 0; row < 8; row ++)
+//            for (int col = 0; col < 8; col ++){
+//                ImageView boardPiece = findViewById ( R.id. )
+//                this.board[row][col] =
+//            }
     }
 
 
