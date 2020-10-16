@@ -1,5 +1,6 @@
-package Unixado.Reversi;
+package Unixado.Reversi.UserInterface;
 
+import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.animation.Animator;
 import android.content.res.Resources;

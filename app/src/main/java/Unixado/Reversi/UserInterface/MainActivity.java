@@ -1,5 +1,6 @@
-package Unixado.Reversi;
+package Unixado.Reversi.UserInterface;
 
+import Unixado.Reversi.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

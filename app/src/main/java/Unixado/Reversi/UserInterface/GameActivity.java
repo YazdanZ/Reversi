@@ -1,5 +1,6 @@
-package Unixado.Reversi;
+package Unixado.Reversi.UserInterface;
 
+import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.animation.Animator;
 import android.content.res.Resources;
@@ -28,7 +29,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow ().setFlags ( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
 
-        setContentView(R.layout.activity_game);
+        setContentView( R.layout.activity_game);
 
         this.rootLayout = findViewById ( R.id.rootLayout );
         this.circularRevealAnimation = new CircularRevealAnimation ( this, this.rootLayout, getResources () );
@@ -56,6 +57,8 @@ public class GameActivity extends AppCompatActivity {
                 });
             }
         }
+
+        getBoardResources ();
     }
 
 
@@ -66,5 +69,26 @@ public class GameActivity extends AppCompatActivity {
         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
         circularRevealAnimation.AnimateClosing ( 400, x, y );
+    }
+
+    private void getBoardResources(){
+        this.board = new ImageView[8][8];
+
+        for (int row = 0; row < 8; row++)
+            for (int col = 0; col < 8; col++){
+                // This line is necessary to "convert" a string (e.g. "i1", "i2" etc.) to a resource ID
+                // For instance, the square at the [1, 1] position on the board has an id of "square_11"
+
+                int rowNumber = row + 1;
+                int colNumber = col + 1;
+
+                String id = "square_"+rowNumber+""+colNumber;
+                int res = getResources().getIdentifier(id, "id", getPackageName());
+                this.board[row][col] = findViewById(res);
+            }
+    }
+
+    private void setBoardResources(){
+
     }
 }
