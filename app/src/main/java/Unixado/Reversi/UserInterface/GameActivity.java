@@ -56,6 +56,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         getBoardResources ();
+        createEmptyBoard ();
     }
 
 
@@ -69,7 +70,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Get the board from the layout and put elements in an 2D array of ImageViews
+     * Get the board ImageViews from the layout and put elements in an 2D array of ImageViews
      */
     private void getBoardResources(){
         this.boardResources = new ImageView[8][8];
@@ -112,6 +113,14 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void createEmptyBoard(){
+        this.board = new Color[8][8];
+
+        for (int row = 0; row < 8; row++)
+            for (int col = 0; col < 8; col++)
+                this.board[row][col] = Color.NONE;
+    }
+
     /**
      *
      * @return board 2D array
@@ -120,12 +129,15 @@ public class GameActivity extends AppCompatActivity {
         return this.board.clone ();
     }
 
+    /**
+     * Update board and update the displayed piece color
+     * @param location location on the board
+     * @param color piece color to assign to the given location
+     */
     public void setBoardPiece(PieceLocation location, Color color){
-        if(this.board == null)
-            this.board = new Color[8][8];
-
         this.board[location.getX ()][location.getY ()] = color;
         setBoardResources ( location, color );
     }
+
 
 }
