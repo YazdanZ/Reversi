@@ -1,19 +1,15 @@
 package Unixado.Reversi.UserInterface;
 
+import Unixado.Reversi.Game.PieceLocation;
+import Unixado.Reversi.Player.Color;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
-import android.animation.Animator;
-import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,7 +18,8 @@ public class GameActivity extends AppCompatActivity {
 
     private ConstraintLayout rootLayout;
     private CircularRevealAnimation circularRevealAnimation;
-    private ImageView[][] board;
+    private ImageView[][] boardResources;
+    private Color[][] board;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +68,11 @@ public class GameActivity extends AppCompatActivity {
         circularRevealAnimation.AnimateClosing ( 400, x, y );
     }
 
+    /**
+     * Get the board from the layout and put elements in an 2D array of ImageViews
+     */
     private void getBoardResources(){
-        this.board = new ImageView[8][8];
+        this.boardResources = new ImageView[8][8];
 
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
@@ -84,11 +84,48 @@ public class GameActivity extends AppCompatActivity {
 
                 String id = "square_"+rowNumber+""+colNumber;
                 int res = getResources().getIdentifier(id, "id", getPackageName());
-                this.board[row][col] = findViewById(res);
+                this.boardResources[row][col] = findViewById(res);
             }
     }
 
-    private void setBoardResources(){
+    /**
+     *
+     * @param location location on the board
+     * @param color piece color to assign to the given location
+     */
+    private void setBoardResources( PieceLocation location, Color color ){
 
+        // Specified square on the board
+        ImageView square = this.boardResources[location.getX ()][location.getY ()];
+
+        switch (color){
+            case BLACK:
+                square.setImageResource ( R.drawable.ic_circleblack );
+                break;
+            case WHITE:
+                square.setImageResource ( R.drawable.ic_circlewhite );
+                break;
+            case NONE:
+                // Remove the white/black piece from the square
+                square.setImageResource ( 0 );
+                break;
+        }
     }
+
+    /**
+     *
+     * @return board 2D array
+     */
+    public Color[][] getBoard(){
+        return this.board.clone ();
+    }
+
+    public void setBoardPiece(PieceLocation location, Color color){
+        if(this.board == null)
+            this.board = new Color[8][8];
+
+        this.board[location.getX ()][location.getY ()] = color;
+        setBoardResources ( location, color );
+    }
+
 }
