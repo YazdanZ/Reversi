@@ -9,7 +9,7 @@ public class PieceLocation {
     public PieceLocation(int x, int y) throws IllegalArgumentException{
 
         // Locations on the board range from [0][0] to [7][7]
-        if(x > 0 && x < 7 && y > 0 && y < 7){
+        if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
             this.x = x;
             this.y = y;
             return;
@@ -27,7 +27,7 @@ public class PieceLocation {
     }
 
     public void setX( int x ) {
-        if (x > 0 && x < 7) {
+        if (x >= 0 && x <= 7) {
             this.x = x;
             return;
         }
@@ -35,7 +35,7 @@ public class PieceLocation {
     }
 
     public void setY( int y ) {
-        if (y > 0 && y < 7) {
+        if (y >= 0 && y <= 7) {
             this.y = y;
             return;
         }

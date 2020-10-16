@@ -1,10 +1,9 @@
 package Unixado.Reversi.UserInterface;
 
 import Unixado.Reversi.Game.PieceLocation;
-import Unixado.Reversi.Player.Color;
+import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -57,6 +56,7 @@ public class GameActivity extends AppCompatActivity {
 
         getBoardResources ();
         createEmptyBoard ();
+        createBoardListeners ();
     }
 
 
@@ -121,6 +121,20 @@ public class GameActivity extends AppCompatActivity {
                 this.board[row][col] = Color.NONE;
     }
 
+    private void createBoardListeners(){
+        for (int row = 0; row < 8; row++)
+            for (int col = 0; col < 8; col++){
+                final int finalRow = row;
+                final int finalCol = col;
+                this.boardResources[finalRow][finalCol].setOnClickListener ( new View.OnClickListener () {
+                    @Override
+                    public void onClick ( View v ) {
+                        setBoardPiece ( new PieceLocation ( finalRow, finalCol ), Color.BLACK );
+                    }
+                } );
+            }
+    }
+
     /**
      *
      * @return board 2D array
@@ -138,6 +152,5 @@ public class GameActivity extends AppCompatActivity {
         this.board[location.getX ()][location.getY ()] = color;
         setBoardResources ( location, color );
     }
-
 
 }

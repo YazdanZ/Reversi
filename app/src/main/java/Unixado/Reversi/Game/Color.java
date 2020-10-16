@@ -1,4 +1,4 @@
-package Unixado.Reversi.Player;
+package Unixado.Reversi.Game;
 
 public enum Color {
     WHITE,

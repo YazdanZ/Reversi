@@ -1,10 +1,10 @@
 package Unixado.Reversi.Player;
 
+import Unixado.Reversi.Game.Color;
+
 public abstract class Player {
 
     private int score;
-    private boolean winner;
-    private boolean turn;
     private Color color;
 
     public Player (Color color){
@@ -13,8 +13,18 @@ public abstract class Player {
         this.score = 2;
 
         this.color = color;
-        // black player always starts first
-        if(this.color == Color.BLACK)
-            this.turn = true;
     }
+
+    public int getScore () {
+        return score;
+    }
+
+    /**
+     * think about setScore and addScore
+     * @param score
+     */
+    public void setScore ( int score ) {
+        this.score = score;
+    }
+
 }
