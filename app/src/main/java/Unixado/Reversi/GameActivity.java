@@ -1,5 +1,6 @@
 package Unixado.Reversi;
 
+import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.animation.Animator;
 import android.content.res.Resources;
 import android.os.Build;
@@ -18,6 +19,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class GameActivity extends AppCompatActivity {
 
+    private ConstraintLayout rootLayout;
+    private CircularRevealAnimation circularRevealAnimation;
     private ImageView[][] board;
 
     @Override
@@ -27,8 +30,10 @@ public class GameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_game);
 
+        this.rootLayout = findViewById ( R.id.rootLayout );
+        this.circularRevealAnimation = new CircularRevealAnimation ( this, this.rootLayout, getResources () );
+
         if (savedInstanceState == null) {
-            final ConstraintLayout rootLayout = findViewById ( R.id.rootLayout );
             rootLayout.setVisibility(View.INVISIBLE);
 
             ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
@@ -36,7 +41,12 @@ public class GameActivity extends AppCompatActivity {
                 viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        circularRevealActivity();
+                        int x = rootLayout.getWidth() / 2;
+                        // 64.5 dps is the dps of the center of the play button from the bottom of the screen
+                        int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
+
+                        circularRevealAnimation.AnimateOpening ( 1000, x, y );
+
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         } else {
@@ -46,81 +56,15 @@ public class GameActivity extends AppCompatActivity {
                 });
             }
         }
-//TODO : put all board cells in the array
-//        for (int row = 0; row < 8; row ++)
-//            for (int col = 0; col < 8; col ++){
-//                ImageView boardPiece = findViewById ( R.id. )
-//                this.board[row][col] =
-//            }
-    }
-
-
-    private void circularRevealActivity() {
-
-        ConstraintLayout rootLayout = findViewById ( R.id.rootLayout );
-        int cx = rootLayout.getWidth() / 2;
-
-        // 64.5 dps is the dps of the center of the play button from the bottom of the screen
-        int cy = rootLayout.getHeight() - getDips( (float) 64.5 );
-
-        float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
-
-        // create the animator for this view (the start radius is zero)
-        Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, 0, finalRadius);
-        circularReveal.setDuration(1000);
-
-        // make the view visible and start the animation
-        rootLayout.setVisibility( View.VISIBLE);
-        circularReveal.start();
-    }
-
-    private int getDips (float dps) {
-        Resources resources = getResources ();
-        return (int) TypedValue.applyDimension (
-                TypedValue.COMPLEX_UNIT_DIP,
-                dps,
-                resources.getDisplayMetrics ()
-        );
     }
 
 
     @Override
     public void onBackPressed() {
+        int x = rootLayout.getWidth() / 2;
+        // 64.5 dps is the dps of the center of the play button from the bottom of the screen
+        int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
-        final ConstraintLayout rootLayout = findViewById ( R.id.rootLayout );
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int cx = rootLayout.getWidth () / 2;
-            int cy = rootLayout.getHeight() - getDips( (float) 64.5 );
-            float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
-            Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, finalRadius, 0);
-
-            circularReveal.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    rootLayout.setVisibility(View.INVISIBLE);
-                    finish();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animator) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animator) {
-
-                }
-            });
-            circularReveal.setDuration(400);
-            circularReveal.start();
-        }else{
-            super.onBackPressed();
-        }
+        circularRevealAnimation.AnimateClosing ( 400, x, y );
     }
 }

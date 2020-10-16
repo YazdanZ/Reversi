@@ -1,5 +1,6 @@
 package Unixado.Reversi;
 
+import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.animation.Animator;
 import android.content.res.Resources;
 import android.os.Build;
@@ -18,23 +19,34 @@ import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private LinearLayout rootLayout;
+    private CircularRevealAnimation circularRevealAnimation;
+
     @Override
     protected void onCreate ( Bundle savedInstanceState ) {
         super.onCreate ( savedInstanceState );
         getWindow ().setFlags ( WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN );
 
         setContentView ( R.layout.settings_activity );
+        this.rootLayout = findViewById ( R.id.settingsLayout );
+
+
+        this.circularRevealAnimation = new CircularRevealAnimation ( this, this.rootLayout, getResources () );
 
         if (savedInstanceState == null) {
-            final LinearLayout rootLayout = findViewById ( R.id.settingsLayout );
-            rootLayout.setVisibility( View.INVISIBLE);
+            this.rootLayout.setVisibility( View.INVISIBLE);
 
-            ViewTreeObserver viewTreeObserver = rootLayout.getViewTreeObserver();
+            ViewTreeObserver viewTreeObserver = this.rootLayout.getViewTreeObserver();
             if (viewTreeObserver.isAlive()) {
                 viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        circularRevealActivity();
+                        // the margin from top and left is 25.5 for the settings button
+                        int x = circularRevealAnimation.getDips ( (float) 25.5 );
+                        int y = circularRevealAnimation.getDips ( (float) 25.5 );
+
+                        circularRevealAnimation.AnimateOpening ( 500, x, y);
+
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                         } else {
@@ -49,66 +61,9 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        final LinearLayout rootLayout = findViewById ( R.id.settingsLayout );
+        int x = circularRevealAnimation.getDips ( (float) 25.5 );
+        int y = circularRevealAnimation.getDips ( (float) 25.5 );
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int cx = getDips ( (float) 25.5 );
-            int cy = getDips ( (float) 25.5  );
-            float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
-            Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, finalRadius, 0);
-
-            circularReveal.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animator) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    rootLayout.setVisibility(View.INVISIBLE);
-                    finish();
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animator) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animator) {
-
-                }
-            });
-            circularReveal.setDuration(400);
-            circularReveal.start();
-        }else{
-            super.onBackPressed();
-        }
-    }
-
-    private void circularRevealActivity() {
-
-        LinearLayout rootLayout = findViewById ( R.id.settingsLayout );
-        int cx = getDips ( (float) 25.5 ); // the margin from top and left is 25.5 for the settings button
-        int cy = getDips ( (float) 25.5 );
-
-        float finalRadius = Math.max(rootLayout.getWidth(), rootLayout.getHeight());
-
-        // create the animator for this view (the start radius is zero)
-        Animator circularReveal = ViewAnimationUtils.createCircularReveal(rootLayout, cx, cy, 0, finalRadius);
-        circularReveal.setDuration(500);
-
-        // make the view visible and start the animation
-        rootLayout.setVisibility( View.VISIBLE);
-        circularReveal.start();
-    }
-
-    private int getDips (float dps) {
-        Resources resources = getResources ();
-        return (int) TypedValue.applyDimension (
-                TypedValue.COMPLEX_UNIT_DIP,
-                dps,
-                resources.getDisplayMetrics ()
-        );
+        circularRevealAnimation.AnimateClosing ( 500, x, y );
     }
 }
