@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         Animation topAnimation = AnimationUtils.loadAnimation ( this, R.anim.top_animation );
         Animation bottomAnimation = AnimationUtils.loadAnimation ( this, R.anim.bottom_animation );
         Animation iconAnimation = AnimationUtils.loadAnimation ( this, R.anim.icon_animations );
+
         //Hooks
         ImageView image = findViewById ( R.id.logo );
         TextView appName = findViewById ( R.id.appName );
