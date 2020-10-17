@@ -6,7 +6,7 @@ public class PieceLocation {
     private int y;
     private static final String EXCEPTION_MSG = "Locations on the board range from [0][0] to [7][7]";
 
-    public PieceLocation(int x, int y) throws IllegalArgumentException{
+    public PieceLocation(int x, int y) {
 
         // Locations on the board range from [0][0] to [7][7]
         if(x >= 0 && x <= 7 && y >= 0 && y <= 7){

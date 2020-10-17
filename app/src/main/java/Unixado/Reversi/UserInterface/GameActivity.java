@@ -1,7 +1,11 @@
 package Unixado.Reversi.UserInterface;
 
+import Unixado.Reversi.Game.Board;
+import Unixado.Reversi.Game.Game;
 import Unixado.Reversi.Game.PieceLocation;
 import Unixado.Reversi.Game.Color;
+import Unixado.Reversi.Player.HumanPlayer;
+import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.os.Build;
@@ -18,7 +22,11 @@ public class GameActivity extends AppCompatActivity {
     private ConstraintLayout rootLayout;
     private CircularRevealAnimation circularRevealAnimation;
     private ImageView[][] boardResources;
-    private Color[][] board;
+    private Board board;
+    private Game game;
+    private Player player1;
+    private Player player2;
+    private Color alt = Color.BLACK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +62,16 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        getBoardResources ();
-        createEmptyBoard ();
+        createGame ();
         createBoardListeners ();
+        new Thread(new Runnable() {
+            public void run() {
+                // a potentially time consuming task
+                //gameLoop ();
+
+            }
+        }).start();
+
     }
 
 
@@ -67,6 +82,30 @@ public class GameActivity extends AppCompatActivity {
         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
         circularRevealAnimation.AnimateClosing ( 400, x, y );
+    }
+
+    /**
+     *
+     * @param location location on the board
+     * @param color piece color to assign to the given location
+     */
+    public void setBoardResources( PieceLocation location, Color color ){
+
+        // Specified square on the board
+        ImageView square = this.boardResources[location.getX ()][location.getY ()];
+
+        switch (color){
+            case BLACK:
+                square.setImageResource ( R.drawable.ic_circleblack );
+                break;
+            case WHITE:
+                square.setImageResource ( R.drawable.ic_circlewhite );
+                break;
+            case NONE:
+                // Remove the white/black piece from the square
+                square.setImageResource ( 0 );
+                break;
+        }
     }
 
     /**
@@ -89,38 +128,6 @@ public class GameActivity extends AppCompatActivity {
             }
     }
 
-    /**
-     *
-     * @param location location on the board
-     * @param color piece color to assign to the given location
-     */
-    private void setBoardResources( PieceLocation location, Color color ){
-
-        // Specified square on the board
-        ImageView square = this.boardResources[location.getX ()][location.getY ()];
-
-        switch (color){
-            case BLACK:
-                square.setImageResource ( R.drawable.ic_circleblack );
-                break;
-            case WHITE:
-                square.setImageResource ( R.drawable.ic_circlewhite );
-                break;
-            case NONE:
-                // Remove the white/black piece from the square
-                square.setImageResource ( 0 );
-                break;
-        }
-    }
-
-    private void createEmptyBoard(){
-        this.board = new Color[8][8];
-
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++)
-                this.board[row][col] = Color.NONE;
-    }
-
     private void createBoardListeners(){
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
@@ -129,28 +136,32 @@ public class GameActivity extends AppCompatActivity {
                 this.boardResources[finalRow][finalCol].setOnClickListener ( new View.OnClickListener () {
                     @Override
                     public void onClick ( View v ) {
-                        setBoardPiece ( new PieceLocation ( finalRow, finalCol ), Color.BLACK );
+                        if(alt == Color.BLACK)
+                            alt = Color.WHITE;
+                        else if (alt == Color.WHITE)
+                            alt = Color.BLACK;
+                        board.setBoardPiece ( new PieceLocation ( finalRow, finalCol ), alt );
+                        game.alternateTurn ();
                     }
                 } );
             }
     }
 
-    /**
-     *
-     * @return board 2D array
-     */
-    public Color[][] getBoard(){
-        return this.board.clone ();
+    private void createGame() {
+        getBoardResources ();
+
+        this.player1 = new HumanPlayer(Color.BLACK);
+        this.player2 = new HumanPlayer ( Color.WHITE );
+
+        this.board = new Board (this);
+        board.createEmptyBoard ();
+
+        this.game = new Game ( this.player1, this.player2, this.board );
     }
 
-    /**
-     * Update board and update the displayed piece color
-     * @param location location on the board
-     * @param color piece color to assign to the given location
-     */
-    public void setBoardPiece(PieceLocation location, Color color){
-        this.board[location.getX ()][location.getY ()] = color;
-        setBoardResources ( location, color );
+    private void gameLoop(){
+        while (true){
+            game.alternateTurn ();
+        }
     }
-
 }
