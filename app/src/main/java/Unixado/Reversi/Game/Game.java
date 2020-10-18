@@ -41,20 +41,25 @@ public class Game {
         // Verify the move
 
         // Verify if there is already a piece at the move's location
-        if(this.board.getBoard ()[move.getLocation ().getX ()][move.getLocation ().getY ()] != Color.NONE)
-            return;
+//        if(this.board.getBoard ()[move.getLocation ().getX ()][move.getLocation ().getY ()] != Color.NONE)
+//            return;
+
+        boolean[][] validMoves = this.board.findAllValidMoves ( move.getPlayer () );
+        if(validMoves[move.getLocation ().getX ()][move.getLocation ().getY ()]){
+            this.moves.push ( move );
+
+
+            // find opponent pieces that will be flipped
+
+            // add the result to the board
+            this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
+            toggleTurn ();
+            isGameOver ();
+
+        }
 
         // Verify if player's turn
         // If above conditions are met, add the move to the queue
-        this.moves.push ( move );
-
-
-        // find opponent pieces that will be flipped
-
-        // add the result to the board
-        this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
-        toggleTurn ();
-        isGameOver ();
     }
 
     public Player getCurrentPlayer(){
