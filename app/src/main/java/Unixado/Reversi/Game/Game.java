@@ -53,6 +53,7 @@ public class Game {
 
             // add the result to the board
             this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
+            this.board.flipOpponentPieces ( move );
             toggleTurn ();
             isGameOver ();
 

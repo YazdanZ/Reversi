@@ -145,5 +145,51 @@ public class Board {
         createEmptyBoard ();
         setInitialBoardState ();
     }
-    
+
+    public void flipOpponentPieces(Move move){
+        // N
+        flipLine(move.getPlayer (), 1, 0, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // NW
+        flipLine(move.getPlayer (), 1, -1, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // NE
+        flipLine(move.getPlayer (), 1, 1, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // S
+        flipLine(move.getPlayer (), -1, 0, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // SW
+        flipLine(move.getPlayer (), -1, -1, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // SE
+        flipLine(move.getPlayer (), -1, 1, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // E
+        flipLine(move.getPlayer (), 0, 1, move.getLocation ().getX (), move.getLocation ().getY ());
+
+        // W
+        flipLine(move.getPlayer (), 0, -1, move.getLocation ().getX (), move.getLocation ().getY ());
+    }
+
+    private boolean flipLine(Player player, int drow, int dcol, int row, int col) {
+        if (row + drow < 0 || row + drow > 7)
+            return false;
+
+        if (col + dcol < 0 || col + dcol > 7)
+            return false;
+
+        if (this.board[row + drow][col + dcol] == Color.NONE)
+            return false;
+
+        if (this.board[row + drow][col + dcol] == player.getColor ())
+            return true;
+
+        else {
+            if (flipLine ( player, drow, dcol, row + drow, col + dcol )){
+                setBoardPiece ( new PieceLocation ( row + drow, col + dcol ), player.getColor () );
+                return true;
+            } else return false;
+        }
+    }
 }
