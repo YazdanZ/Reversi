@@ -1,9 +1,9 @@
 package Unixado.Reversi.Game;
 
-public class PieceLocation {
+public final class PieceLocation {
 
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
     private static final String EXCEPTION_MSG = "Locations on the board range from [0][0] to [7][7]";
 
     public PieceLocation(int x, int y) {
@@ -26,19 +26,4 @@ public class PieceLocation {
         return this.y;
     }
 
-    public void setX( int x ) {
-        if (x >= 0 && x <= 7) {
-            this.x = x;
-            return;
-        }
-        throw new IllegalArgumentException (EXCEPTION_MSG);
-    }
-
-    public void setY( int y ) {
-        if (y >= 0 && y <= 7) {
-            this.y = y;
-            return;
-        }
-        throw new IllegalArgumentException (EXCEPTION_MSG);
-    }
 }
