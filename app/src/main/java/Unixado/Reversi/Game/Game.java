@@ -1,34 +1,63 @@
 package Unixado.Reversi.Game;
 
+import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
+import Unixado.Reversi.UserInterface.GameActivity;
+
+import java.util.Stack;
 
 public class Game {
     private Board board;
+    private GameActivity gameActivity;
     private Player player1;
     private Player player2;
-    public Player turn;
-    //private Board board;
+    private Stack<Move> moves;
 
-    public Game(Player player1, Player player2, Board board){
-        this.player1 = player1;
-        this.player2 = player2;
-        this.board = board;
-        this.turn = player1;
+
+    public Game( GameActivity gameActivity ){
+        this.gameActivity = gameActivity;
+
+        // For now, let's just hardcode 2 human players
+        // We will change this once the "Settings" is Implemented
+        // Give the user the option to choose their own colors,
+        // possibly the possibility to choose which color goes first
+        // And the option to choose HumanVSHuman to AIvsHuman or AI vs AI
+
+        this.player1 = new HumanPlayer ( Color.WHITE );
+        this.player2 = new HumanPlayer ( Color.BLACK );
+
+        this.moves = new Stack<> ();
+        startGame ();
     }
 
-    public Player getPlayerTurn(){
-        if(player1.isTurn ())
+    private void startGame(){
+
+        // Create and set board with initial states according to othello version of reversi
+        this.board = new Board ( this.gameActivity );
+    }
+
+    public void addMove(Move move){
+        // Verify the move
+        // Verify if player's turn
+        // If above conditions are met, add the move to the queue
+        this.moves.push ( move );
+
+        // find opponent pieces that will be flipped
+
+        // add the result to the board
+        this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
+        switchTurn ();
+    }
+
+    public Player getCurrentPlayer(){
+        if(this.player1.isTurn ())
             return player1;
-        else return player2;
+        return player2;
     }
 
-    public void alternateTurn(){
-//        player1.alternateTurn ();
-//        player2.alternateTurn ();
-        if(turn == player1)
-            turn = player2;
-        if(turn == player2)
-            turn = player1;
+    private void switchTurn(){
+        player1.alternateTurn ();
+        player2.alternateTurn ();
     }
 
 }

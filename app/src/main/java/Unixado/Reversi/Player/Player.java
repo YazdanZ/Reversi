@@ -4,8 +4,8 @@ import Unixado.Reversi.Game.Color;
 
 public abstract class Player {
 
-    private int score;
     private final Color color;
+    private int score;
     private boolean turn;
 
     public Player (Color color){

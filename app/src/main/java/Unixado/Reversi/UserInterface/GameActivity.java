@@ -1,11 +1,9 @@
 package Unixado.Reversi.UserInterface;
 
-import Unixado.Reversi.Game.Board;
 import Unixado.Reversi.Game.Game;
+import Unixado.Reversi.Game.Move;
 import Unixado.Reversi.Game.PieceLocation;
 import Unixado.Reversi.Game.Color;
-import Unixado.Reversi.Player.HumanPlayer;
-import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.os.Build;
@@ -19,14 +17,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class GameActivity extends AppCompatActivity {
 
+    // Root layout of our activity
     private ConstraintLayout rootLayout;
     private CircularRevealAnimation circularRevealAnimation;
     private ImageView[][] boardResources;
-    private Board board;
     private Game game;
-    private Player player1;
-    private Player player2;
-    private Color alt = Color.BLACK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +56,13 @@ public class GameActivity extends AppCompatActivity {
                 });
             }
         }
-
-        createGame ();
+        
+        
+        fetchBoardResources ();
         createBoardListeners ();
         new Thread(new Runnable() {
             public void run() {
-                // a potentially time consuming task
-                //gameLoop ();
-
+                createGame();
             }
         }).start();
 
@@ -111,24 +105,23 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Get the board ImageViews from the layout and put elements in an 2D array of ImageViews
      */
-    private void getBoardResources(){
+    private void fetchBoardResources (){
         this.boardResources = new ImageView[8][8];
 
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
-                // This line is necessary to "convert" a string (e.g. "i1", "i2" etc.) to a resource ID
-                // For instance, the square at the [1, 1] position on the board has an id of "square_11"
-
                 int rowNumber = row + 1;
                 int colNumber = col + 1;
 
+                // These line are necessary to "convert" a string (e.g. "i1", "i2" etc.) to a resource ID
+                // For instance, the square at the [1, 1] position on the board has an id of "square_11"
                 String id = "square_"+rowNumber+""+colNumber;
                 int res = getResources().getIdentifier(id, "id", getPackageName());
                 this.boardResources[row][col] = findViewById(res);
             }
     }
 
-    private void createBoardListeners(){
+    private void createBoardListeners (){
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
                 final int finalRow = row;
@@ -136,32 +129,17 @@ public class GameActivity extends AppCompatActivity {
                 this.boardResources[finalRow][finalCol].setOnClickListener ( new View.OnClickListener () {
                     @Override
                     public void onClick ( View v ) {
-                        if(alt == Color.BLACK)
-                            alt = Color.WHITE;
-                        else if (alt == Color.WHITE)
-                            alt = Color.BLACK;
-                        board.setBoardPiece ( new PieceLocation ( finalRow, finalCol ), alt );
-                        game.alternateTurn ();
+                        //TODO
+                        // Create a move
+                        Move move = new Move (game.getCurrentPlayer (), new PieceLocation ( finalRow, finalCol ) );
+                        game.addMove ( move );
                     }
                 } );
             }
     }
 
-    private void createGame() {
-        getBoardResources ();
+    private void createGame(){
+        this.game = new Game ( this );
 
-        this.player1 = new HumanPlayer(Color.BLACK);
-        this.player2 = new HumanPlayer ( Color.WHITE );
-
-        this.board = new Board (this);
-        board.createEmptyBoard ();
-
-        this.game = new Game ( this.player1, this.player2, this.board );
-    }
-
-    private void gameLoop(){
-        while (true){
-            game.alternateTurn ();
-        }
     }
 }
