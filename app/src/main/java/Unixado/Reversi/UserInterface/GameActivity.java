@@ -140,6 +140,5 @@ public class GameActivity extends AppCompatActivity {
 
     private void createGame(){
         this.game = new Game ( this );
-
     }
 }

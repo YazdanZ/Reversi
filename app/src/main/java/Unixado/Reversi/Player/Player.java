@@ -19,27 +19,27 @@ public abstract class Player {
             this.turn = true;
     }
 
-    public int getScore () {
+    public final int getScore () {
         return score;
     }
 
     /**
-     * think about setScore and addScore
-     * @param score
+     * TODO: think about whichis best : setScore or addScore
+     * @param score number of pieces the player has n the board
      */
-    public void setScore ( int score ) {
+    public final void setScore ( int score ) {
         this.score = score;
     }
 
-    public void alternateTurn(){
+    public final void toggleTurn (){
         this.turn = !this.turn;
     }
 
-    public boolean isTurn(){
+    public final boolean isTurn(){
         return this.turn;
     }
 
-    public Color getColor(){
+    public final Color getColor(){
         return this.color;
     }
 }

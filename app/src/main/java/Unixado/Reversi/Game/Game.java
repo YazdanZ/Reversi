@@ -7,10 +7,10 @@ import Unixado.Reversi.UserInterface.GameActivity;
 import java.util.Stack;
 
 public class Game {
+    private final GameActivity gameActivity;
+    private final Player player1;
+    private final Player player2;
     private Board board;
-    private GameActivity gameActivity;
-    private Player player1;
-    private Player player2;
     private Stack<Move> moves;
 
 
@@ -38,15 +38,21 @@ public class Game {
 
     public void addMove(Move move){
         // Verify the move
+
+        // Verify if there is already a piece at the move's location
+        if(this.board.getBoard ()[move.getLocation ().getX ()][move.getLocation ().getY ()] != Color.NONE)
+            return;
+
         // Verify if player's turn
         // If above conditions are met, add the move to the queue
         this.moves.push ( move );
+
 
         // find opponent pieces that will be flipped
 
         // add the result to the board
         this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
-        switchTurn ();
+        toggleTurn ();
     }
 
     public Player getCurrentPlayer(){
@@ -55,9 +61,9 @@ public class Game {
         return player2;
     }
 
-    private void switchTurn(){
-        player1.alternateTurn ();
-        player2.alternateTurn ();
+    private void toggleTurn (){
+        player1.toggleTurn ();
+        player2.toggleTurn ();
     }
 
 }
