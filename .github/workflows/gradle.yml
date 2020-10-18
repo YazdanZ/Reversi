@@ -24,5 +24,4 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Android Apk CI
-      uses: yuanjinsongquyi/action_android_build@v1
+
