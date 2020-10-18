@@ -3,6 +3,7 @@ package Unixado.Reversi.Game;
 import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.UserInterface.GameActivity;
+import android.util.Log;
 
 import java.util.Stack;
 
@@ -53,6 +54,7 @@ public class Game {
         // add the result to the board
         this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
         toggleTurn ();
+        isGameOver ();
     }
 
     public Player getCurrentPlayer(){
@@ -66,4 +68,18 @@ public class Game {
         player2.toggleTurn ();
     }
 
+    private boolean isGameOver(){
+        // Read rules is more detail
+
+        // For now, I think that the game is over either when the board is filled or when
+        // none of the 2 players have a remaining valid move
+
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++){
+                if(this.board.getBoard ()[i][j] == Color.NONE)
+                    return false;
+            }
+        Log.i ("Game", "Game is over");
+        return true;
+    }
 }

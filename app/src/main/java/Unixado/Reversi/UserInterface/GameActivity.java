@@ -7,6 +7,7 @@ import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -56,12 +57,13 @@ public class GameActivity extends AppCompatActivity {
                 });
             }
         }
-        
-        
+
+
         fetchBoardResources ();
         createBoardListeners ();
         new Thread(new Runnable() {
             public void run() {
+                Log.i ("Game Activity", "Creating a new game ...");
                 createGame();
             }
         }).start();
@@ -129,6 +131,7 @@ public class GameActivity extends AppCompatActivity {
                 this.boardResources[finalRow][finalCol].setOnClickListener ( new View.OnClickListener () {
                     @Override
                     public void onClick ( View v ) {
+                        Log.i ( "Game Activity", "cell [" + finalRow + "][" + finalCol + "] has been selected");
                         //TODO
                         // Create a move
                         Move move = new Move (game.getCurrentPlayer (), new PieceLocation ( finalRow, finalCol ) );
