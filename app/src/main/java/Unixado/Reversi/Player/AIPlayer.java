@@ -18,5 +18,5 @@ public abstract class AIPlayer extends Player {
             takeAction();
     }
 
-    protected abstract void takeAction();
+    public abstract void takeAction();
 }

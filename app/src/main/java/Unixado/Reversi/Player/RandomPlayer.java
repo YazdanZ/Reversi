@@ -12,11 +12,9 @@ public class RandomPlayer extends AIPlayer{
 
     public RandomPlayer ( Color color, Game game ) {
         super ( color, game );
-        if(this.isTurn ())
-            takeAction ();
     }
 
-    protected void takeAction(){
+    public void takeAction(){
         boolean[][] validMoves = this.game.findAllValidMoves ( this );
         ArrayList<DiskLocation> validLocations = new ArrayList<> ();
         for(int row = 0; row < 8; row++)

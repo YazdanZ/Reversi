@@ -1,5 +1,6 @@
 package Unixado.Reversi.Game;
 
+import Unixado.Reversi.Player.AIPlayer;
 import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.Player.RandomPlayer;
@@ -22,14 +23,24 @@ public class Game {
         // Create and set board with initial states according to othello version of reversi
         this.board = new Board ( gameActivity );
 
-        // For now, let's just hardcode 2 human players
-        // We will change this once the "Settings" is Implemented
-        // Give the user the option to choose their own colors,
-        // possibly the possibility to choose which color goes first
-        // And the option to choose HumanVSHuman to AIvsHuman or AI vs AI
+/*         For now, let's just hardcode 2 human players
+         We will change this once the "Settings" is Implemented
+         Give the user the option to choose their own colors,
+         possibly the possibility to choose which color goes first
+         And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new RandomPlayer ( Color.WHITE, this );
-        this.player2 = new HumanPlayer ( Color.BLACK );
+        this.player1 = new RandomPlayer ( Color.BLACK, this );
+        this.player2 = new HumanPlayer ( Color.WHITE );
+
+/*
+         If the player is an AI and has the first move in the game, make the player take action
+         this has to be done only once as the AI player will automatically move when the isTurn
+         field is set to true thought Player.toggleTurn()
+*/
+        if(player1.isTurn () && player1 instanceof AIPlayer)
+            ((AIPlayer) player1).takeAction ();
+        if(player2.isTurn () && player2 instanceof AIPlayer)
+            ((AIPlayer) player2).takeAction ();
     }
 
     public void addMove(Move move){
