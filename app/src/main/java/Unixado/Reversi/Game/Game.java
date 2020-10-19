@@ -2,6 +2,7 @@ package Unixado.Reversi.Game;
 
 import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
+import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
 import android.util.Log;
 
@@ -16,25 +17,27 @@ public class Game {
 
     public Game( GameActivity gameActivity ){
 
+        this.moves = new Stack<> ();
+
+        // Create and set board with initial states according to othello version of reversi
+        this.board = new Board ( gameActivity );
+
         // For now, let's just hardcode 2 human players
         // We will change this once the "Settings" is Implemented
         // Give the user the option to choose their own colors,
         // possibly the possibility to choose which color goes first
         // And the option to choose HumanVSHuman to AIvsHuman or AI vs AI
 
-        this.player1 = new HumanPlayer ( Color.WHITE );
+        this.player1 = new RandomPlayer ( Color.WHITE, this );
         this.player2 = new HumanPlayer ( Color.BLACK );
-
-        this.moves = new Stack<> ();
-
-        // Create and set board with initial states according to othello version of reversi
-        this.board = new Board ( gameActivity );
     }
 
     public void addMove(Move move){
         // Verify the move
+        if(move.getPlayer () != getCurrentPlayer ())
+            return;
 
-        boolean[][] validMoves = this.board.findAllValidMoves ( move.getPlayer () );
+        boolean[][] validMoves = findAllValidMoves ( move.getPlayer () );
         if(validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]){
 
             // move is valid push it to the move stack
@@ -54,12 +57,12 @@ public class Game {
 
         // toggle turn if the current player has no valid moves
         // show that the player has no valid moves on the UI
-        if(!this.board.playerHasValidMoves ( getCurrentPlayer () ))
+        if(this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
             toggleTurn ();
 
         // Show that the second player has no valid moves on the UI
         // if none of the players have a valid move then the game is over
-        if(!this.board.playerHasValidMoves ( getCurrentPlayer () ))
+        if(this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
             gameIsOver ();
 
     }
@@ -83,5 +86,9 @@ public class Game {
         Log.i ("Game Over", "The game is over");
 
         // find the winner and show it on the UI
+    }
+
+    public boolean[][] findAllValidMoves(Player player){
+        return this.board.findAllValidMoves ( player );
     }
 }
