@@ -35,7 +35,7 @@ public abstract class Player {
         this.score += score;
     }
 
-    public final void toggleTurn (){
+    public void toggleTurn (){
         this.turn = !this.turn;
     }
 

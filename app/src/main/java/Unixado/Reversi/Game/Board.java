@@ -241,13 +241,13 @@ public class Board {
      * @param player player
      * @return if the player has at least one valid move
      */
-    public boolean playerHasValidMoves(Player player){
+    public boolean playerHasNoValidMoves ( Player player){
         boolean[][] validMoves = findAllValidMoves ( player );
         for (int row = 0; row < 8; row++ )
             for (int col = 0; col < 8; col++){
                 if(validMoves[row][col])
-                    return true;
+                    return false;
             }
-        return false;
+        return true;
     }
 }
