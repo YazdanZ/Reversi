@@ -40,7 +40,7 @@ public class Game {
     public void addMove(Move move){
         // Verify the move
 
-        // Verify if there is already a piece at the move's location
+        // Verify if there is already a disk at the move's location
 //        if(this.board.getBoard ()[move.getLocation ().getX ()][move.getLocation ().getY ()] != Color.NONE)
 //            return;
 
@@ -49,11 +49,11 @@ public class Game {
             this.moves.push ( move );
 
 
-            // find opponent pieces that will be flipped
+            // find opponent disks that will be flipped
 
             // add the result to the board
-            this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
-            this.board.flipOpponentPieces ( move );
+            this.board.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
+            this.board.flipOpponentDisks ( move );
             toggleTurn ();
             isGameOver ();
 

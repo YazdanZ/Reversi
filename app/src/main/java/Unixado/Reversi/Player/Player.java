@@ -25,7 +25,7 @@ public abstract class Player {
 
     /**
      * TODO: think about whichis best : setScore or addScore
-     * @param score number of pieces the player has n the board
+     * @param score number of disks the player has n the board
      */
     public final void setScore ( int score ) {
         this.score = score;

@@ -18,11 +18,11 @@ public class Board {
     }
 
     /**
-     * Update board and update the displayed piece color displayed on the board
+     * Update board and update the displayed disk color displayed on the board
      * @param location location on the board
-     * @param color piece color to assign to the given location
+     * @param color disk color to assign to the given location
      */
-    public void setBoardPiece(PieceLocation location, Color color){
+    public void setBoardDisk ( DiskLocation location, Color color){
         this.board[location.getRow ()][location.getColumn ()] = color;
         this.gameActivity.setBoardResources ( location, color );
     }
@@ -42,7 +42,7 @@ public class Board {
             for (int col = 0; col < 8; col++){
                 if(this.board[row][col] == Color.BLANK){
 
-                    Move move = new Move ( player, new PieceLocation ( row, col ) );
+                    Move move = new Move ( player, new DiskLocation ( row, col ) );
                     // Check all directions to the selected square to determine if it's a valid moves
                     boolean n = isValidMove (1, 0, move ); // North
                     boolean nw = isValidMove ( 1, -1, move ); // NorthWest
@@ -63,13 +63,13 @@ public class Board {
 
     /**
      * Check if the position given by row + drow and col + dcol on the board
-     * contains the opposite player's piece. If so, check if the line indicated by
+     * contains the opposite player's disk. If so, check if the line indicated by
      * adding drow to row and dcol to col eventually ends in the player's color; meaning
-     * that one or more opponent pieces are surrounded by 2 of the player's pieces.
+     * that one or more opponent disks are surrounded by 2 of the player's disks.
      *
      * @param drow delta row specifies the y-direction
      * @param dcol delta column specifies the x-direction
-     * @param move move containing a the player who moves and the location the player puts the piece
+     * @param move move containing a the player who moves and the location the player puts the disk
      * @return if the move is valid in the direction specified by drow and dcol
      */
     private boolean isValidMove(int drow, int dcol, Move move ){
@@ -90,15 +90,15 @@ public class Board {
             return false;
 
         // if the second next position in drow and dcol is not on the board, then the move in drow and dcol is invalid
-        // as another of the player's pieces can't surround an opponent piece.
+        // as another of the player's disks can't surround an opponent disk.
         if(isPositionNotOnBoard ( row + drow + drow, col + dcol + dcol ))
             return false;
 
 
         Move nextMove = new Move ( move.getPlayer (),
-                new PieceLocation ( row + drow + drow, col + dcol + dcol ));
+                new DiskLocation ( row + drow + drow, col + dcol + dcol ));
 
-        // If the above conditions are met, check if there is a player's piece surrounding one or more opponent pieces
+        // If the above conditions are met, check if there is a player's disk surrounding one or more opponent disks
         return checkLineMatch (drow, dcol, nextMove );
     }
 
@@ -115,13 +115,13 @@ public class Board {
     }
 
     /**
-     * Check if there is a piece with the player's color on the line defined from
+     * Check if there is a disk with the player's color on the line defined from
      * row and col to any line further by adding drow and dcol to row and col
      * @param drow delta row specifies the y-direction
      * @param dcol delta column specifies the x-direction
      * @param move move containing a the player who moves and the location
      *             on the board that defines the starting point of our line
-     * @return whether there is a player's piece at the end of the line
+     * @return whether there is a player's disk at the end of the line
      *         starting from row and col in the direction of drow and dcol
      */
     private boolean checkLineMatch(int drow, int dcol, Move move ){
@@ -136,12 +136,12 @@ public class Board {
             return false;
 
         // if the next position in drow and dcol direction is not on the board,
-        // we have reached the end of ur line without finding another of the player's pieces
+        // we have reached the end of ur line without finding another of the player's disks
         if(isPositionNotOnBoard ( row + drow, col + dcol ))
             return false;
 
         Move nextMove = new Move ( move.getPlayer (),
-                new PieceLocation ( row + drow, col + dcol ));
+                new DiskLocation ( row + drow, col + dcol ));
 
         // do a recursive check
         return checkLineMatch (drow, dcol, nextMove);
@@ -159,7 +159,7 @@ public class Board {
     }
 
     /**
-     * Set the starting position of black and white pieces
+     * Set the starting position of black and white disks
      *
      * Starting position of the game:
      * - - - - - - - -
@@ -171,14 +171,14 @@ public class Board {
      * - - - - - - - -
      */
     private void setInitialBoardState(){
-        setBoardPiece ( new PieceLocation ( 3, 3 ), Color.BLACK );
-        setBoardPiece ( new PieceLocation ( 4, 4 ), Color.BLACK );
-        setBoardPiece ( new PieceLocation ( 4, 3 ), Color.WHITE );
-        setBoardPiece ( new PieceLocation ( 3, 4 ), Color.WHITE );
+        setBoardDisk ( new DiskLocation ( 3, 3 ), Color.BLACK );
+        setBoardDisk ( new DiskLocation ( 4, 4 ), Color.BLACK );
+        setBoardDisk ( new DiskLocation ( 4, 3 ), Color.WHITE );
+        setBoardDisk ( new DiskLocation ( 3, 4 ), Color.WHITE );
     }
 
     /**
-     * Create an empty board and set the initial position of pieces
+     * Create an empty board and set the initial position of disks
      */
     private void initializeBoard(){
         createEmptyBoard ();
@@ -187,10 +187,10 @@ public class Board {
 
     /**
      * Check id a flip in any direction is possible,
-     * is a flip is possible, flip the required pieces
-     * @param move move that causes the opponent pieces to flip
+     * is a flip is possible, flip the required disks
+     * @param move move that causes the opponent disks to flip
      */
-    public void flipOpponentPieces(Move move){
+    public void flipOpponentDisks ( Move move){
         // Do all possible flips in every direction
 
         flipLine( 1, 0, move); // North
@@ -204,12 +204,12 @@ public class Board {
     }
 
     /**
-     * Flip pieces that need to be flipped on the line starting from the
+     * Flip disks that need to be flipped on the line starting from the
      * row and column defined by move and in the direction of drow and dcol.
      * @param drow delta row specifies the y-direction
      * @param dcol delta column specifies the x-direction
-     * @param move move that causes the opponent pieces to flip
-     * @return true if there could exist a piece that would need to be flipped
+     * @param move move that causes the opponent disks to flip
+     * @return true if there could exist a disk that would need to be flipped
      */
     private boolean flipLine(int drow, int dcol, Move move) {
         int row = move.getLocation ().getRow ();
@@ -226,11 +226,11 @@ public class Board {
             return true;
 
         else {
-            Move nextMove = new Move ( move.getPlayer () , new PieceLocation ( row + drow, col + dcol ) );
+            Move nextMove = new Move ( move.getPlayer () , new DiskLocation ( row + drow, col + dcol ) );
 
             // do a recursive check
             if (flipLine (drow, dcol, nextMove )){
-                setBoardPiece ( new PieceLocation ( row + drow, col + dcol ), playerColor);
+                setBoardDisk ( new DiskLocation ( row + drow, col + dcol ), playerColor);
                 return true;
             } else return false;
         }

@@ -5,20 +5,20 @@ import Unixado.Reversi.Player.Player;
 public final class Move {
 
     private final Player player;
-    private final PieceLocation location;
+    private final DiskLocation location;
 
     /**
      * A move consists of a player who moves and
-     * a location where the player puts a piece
+     * a location where the player puts a disk
      * @param player the player who does the move
-     * @param location the location where the player piece is placed
+     * @param location the location where the player disk is placed
      */
-    public Move ( Player player, PieceLocation location ){
+    public Move ( Player player, DiskLocation location ){
         this.player = player;
         this.location = location;
     }
 
-    public PieceLocation getLocation () {
+    public DiskLocation getLocation () {
         return location;
     }
 
