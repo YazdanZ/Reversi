@@ -52,7 +52,7 @@ public class Game {
             // find opponent pieces that will be flipped
 
             // add the result to the board
-            //this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
+            this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
             this.board.flipOpponentPieces ( move );
             toggleTurn ();
             isGameOver ();

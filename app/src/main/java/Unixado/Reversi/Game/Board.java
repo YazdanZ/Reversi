@@ -22,7 +22,7 @@ public class Board {
      * @param location location on the board
      * @param color piece color to assign to the given location
      */
-    private void setBoardPiece(PieceLocation location, Color color){
+    public void setBoardPiece(PieceLocation location, Color color){
         this.board[location.getRow ()][location.getColumn ()] = color;
         this.gameActivity.setBoardResources ( location, color );
     }
@@ -44,15 +44,16 @@ public class Board {
 
                     Move move = new Move ( player, new PieceLocation ( row, col ) );
                     // Check all directions to the selected square to determine if it's a valid moves
-                    boolean n = isValidMove (1, 0, move );
-                    boolean nw = isValidMove ( 1, -1, move );
-                    boolean ne = isValidMove ( 1, 1, move );
-                    boolean s = isValidMove ( -1, 0, move );
-                    boolean sw = isValidMove ( -1, -1, move );
-                    boolean se = isValidMove ( -1, 1, move );
-                    boolean e = isValidMove ( 0, 1, move );
-                    boolean w = isValidMove ( 0, -1, move );
+                    boolean n = isValidMove (1, 0, move ); // North
+                    boolean nw = isValidMove ( 1, -1, move ); // NorthWest
+                    boolean ne = isValidMove ( 1, 1, move ); // NorthEast
+                    boolean s = isValidMove ( -1, 0, move ); // South
+                    boolean sw = isValidMove ( -1, -1, move ); // SouthWest
+                    boolean se = isValidMove ( -1, 1, move ); //SouthEast
+                    boolean e = isValidMove ( 0, 1, move ); // East
+                    boolean w = isValidMove ( 0, -1, move ); // West
 
+                    // if the move is valid in any direction, the move is valid
                     if( n || nw || ne || s || sw || se || e || w)
                         validMoves[row][col] = true;
                 }
@@ -173,53 +174,60 @@ public class Board {
         setBoardPiece ( new PieceLocation ( 3, 4 ), Color.WHITE );
     }
 
+    /**
+     * Create an empty board and set the initial position of pieces
+     */
     private void initializeBoard(){
         createEmptyBoard ();
         setInitialBoardState ();
     }
 
+    /**
+     * Check id a flip in any direction is possible,
+     * is a flip is possible, flip the required pieces
+     * @param move move that causes the opponent pieces to flip
+     */
     public void flipOpponentPieces(Move move){
-        // N
-        flipLine(move.getPlayer (), 1, 0, move.getLocation ().getRow (), move.getLocation ().getColumn ());
+        // Do all possible flips in every direction
 
-        // NW
-        flipLine(move.getPlayer (), 1, -1, move.getLocation ().getRow (), move.getLocation ().getColumn ());
-
-        // NE
-        flipLine(move.getPlayer (), 1, 1, move.getLocation ().getRow (), move.getLocation ().getColumn ());
-
-        // S
-        flipLine(move.getPlayer (), -1, 0, move.getLocation ().getRow (), move.getLocation ().getColumn ());
-
-        // SW
-        flipLine(move.getPlayer (), -1, -1, move.getLocation ().getRow (), move.getLocation ().getColumn ());
-
-        // SE
-        flipLine(move.getPlayer (), -1, 1, move.getLocation ().getRow (), move.getLocation ().getColumn ());
-
-        // E
-        flipLine(move.getPlayer (), 0, 1, move.getLocation ().getRow (), move.getLocation ().getColumn ());
-
-        // W
-        flipLine(move.getPlayer (), 0, -1, move.getLocation ().getRow (), move.getLocation ().getColumn ());
+        flipLine( 1, 0, move); // North
+        flipLine( 1, -1, move); // NorthWest
+        flipLine( 1, 1, move); // NorthEast
+        flipLine( -1, 0, move); // South
+        flipLine( -1, -1, move); // SouthWest
+        flipLine( -1, 1, move); // SouthEast
+        flipLine( 0, 1, move); // East
+        flipLine( 0, -1, move); // West
     }
 
-    private boolean flipLine(Player player, int drow, int dcol, int row, int col) {
-        if (row + drow < 0 || row + drow > 7)
-            return false;
+    /**
+     * Flip pieces that need to be flipped on the line starting from the
+     * row and column defined by move and in the direction of drow and dcol.
+     * @param drow delta row specifies the y-direction
+     * @param dcol delta column specifies the x-direction
+     * @param move move that causes the opponent pieces to flip
+     * @return true if there could exist a piece that would need to be flipped
+     */
+    private boolean flipLine(int drow, int dcol, Move move) {
+        int row = move.getLocation ().getRow ();
+        int col = move.getLocation ().getColumn ();
+        Color playerColor = move.getPlayer ().getColor ();
 
-        if (col + dcol < 0 || col + dcol > 7)
+        if(isPositionNotOnBoard ( row + drow, col + dcol ))
             return false;
 
         if (this.board[row + drow][col + dcol] == Color.BLANK)
             return false;
 
-        if (this.board[row + drow][col + dcol] == player.getColor ())
+        if (this.board[row + drow][col + dcol] == playerColor)
             return true;
 
         else {
-            if (flipLine ( player, drow, dcol, row + drow, col + dcol )){
-                setBoardPiece ( new PieceLocation ( row + drow, col + dcol ), player.getColor () );
+            Move nextMove = new Move ( move.getPlayer () , new PieceLocation ( row + drow, col + dcol ) );
+
+            // do a recursive check
+            if (flipLine (drow, dcol, nextMove )){
+                setBoardPiece ( new PieceLocation ( row + drow, col + dcol ), playerColor);
                 return true;
             } else return false;
         }
