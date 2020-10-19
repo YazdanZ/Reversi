@@ -250,4 +250,8 @@ public class Board {
             }
         return true;
     }
+
+    public Color[][] getBoard(){
+        return this.board.clone ();
+    }
 }
