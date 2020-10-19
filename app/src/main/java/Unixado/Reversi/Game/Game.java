@@ -8,15 +8,13 @@ import android.util.Log;
 import java.util.Stack;
 
 public class Game {
-    private final GameActivity gameActivity;
     private final Player player1;
     private final Player player2;
-    private Board board;
+    private final Board board;
     private Stack<Move> moves;
 
 
     public Game( GameActivity gameActivity ){
-        this.gameActivity = gameActivity;
 
         // For now, let's just hardcode 2 human players
         // We will change this once the "Settings" is Implemented
@@ -28,13 +26,9 @@ public class Game {
         this.player2 = new HumanPlayer ( Color.BLACK );
 
         this.moves = new Stack<> ();
-        startGame ();
-    }
-
-    private void startGame(){
 
         // Create and set board with initial states according to othello version of reversi
-        this.board = new Board ( this.gameActivity );
+        this.board = new Board ( gameActivity );
     }
 
     public void addMove(Move move){
@@ -52,12 +46,22 @@ public class Game {
             // flip opponent disks that have been captured by this move
             this.board.flipOpponentDisks ( move );
 
+            // Update player's score
+
             // change turns
             toggleTurn ();
-
-            // verify if the game is over
-            isGameOver ();
         }
+
+        // toggle turn if the current player has no valid moves
+        // show that the player has no valid moves on the UI
+        if(!this.board.playerHasValidMoves ( getCurrentPlayer () ))
+            toggleTurn ();
+
+        // Show that the second player has no valid moves on the UI
+        // if none of the players have a valid move then the game is over
+        if(!this.board.playerHasValidMoves ( getCurrentPlayer () ))
+            gameIsOver ();
+
     }
 
     public Player getCurrentPlayer(){
@@ -72,17 +76,12 @@ public class Game {
     }
 
     private boolean isGameOver(){
-        // Read rules is more detail
-
-        // For now, I think that the game is over either when the board is filled or when
-        // none of the 2 players have a remaining valid move
-
-        for (int i = 0; i < 8; i++)
-            for (int j = 0; j < 8; j++){
-                //if(this.board.getBoard ()[i][j] == Color.BLANK)
-                    return false;
-            }
-        Log.i ("Game", "Game is over");
         return true;
+    }
+
+    private void gameIsOver(){
+        Log.i ("Game Over", "The game is over");
+
+        // find the winner and show it on the UI
     }
 }

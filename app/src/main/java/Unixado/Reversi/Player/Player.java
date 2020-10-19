@@ -19,16 +19,20 @@ public abstract class Player {
             this.turn = true;
     }
 
+    /**
+     * get the number of disks the player has on the board
+     * @return score
+     */
     public final int getScore () {
-        return score;
+        return this.score;
     }
 
     /**
-     * TODO: think about whichis best : setScore or addScore
-     * @param score number of disks the player has n the board
+     * Add/Subtract player's score
+     * @param score number of player disks added to the board
      */
-    public final void setScore ( int score ) {
-        this.score = score;
+    public final void addScore ( int score ) {
+        this.score += score;
     }
 
     public final void toggleTurn (){
