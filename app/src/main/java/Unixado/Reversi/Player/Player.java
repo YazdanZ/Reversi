@@ -28,11 +28,11 @@ public abstract class Player {
     }
 
     /**
-     * Add/Subtract player's score
-     * @param score number of player disks added to the board
+     * set player's score
+     * @param score number of player disks on the board
      */
-    public final void addScore ( int score ) {
-        this.score += score;
+    public final void setScore ( int score ) {
+        this.score = score;
     }
 
     public void toggleTurn (){

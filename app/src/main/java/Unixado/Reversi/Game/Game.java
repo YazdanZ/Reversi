@@ -50,7 +50,6 @@ public class Game {
 
         boolean[][] validMoves = findAllValidMoves ( move.getPlayer () );
         if(validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]){
-
             // move is valid push it to the move stack
             this.moves.push ( move );
 
@@ -64,6 +63,8 @@ public class Game {
 
             // change turns
             toggleTurn ();
+
+            updateScores ();
         }
 
         // toggle turn if the current player has no valid moves
@@ -97,6 +98,25 @@ public class Game {
         Log.i ("Game Over", "The game is over");
 
         // find the winner and show it on the UI
+    }
+
+    private void updateScores(){
+        // reset both player scores
+        player1.setScore ( 0 );
+        player2.setScore ( 0 );
+
+        Color[][] board = this.board.getBoard ();
+        // loop through the board and add a score each time a player's disk is found
+        for (int row = 0; row < 8; row++)
+            for (int col = 0 ; col < 8; col++){
+                if(board[row][col] == player1.getColor ())
+                    player1.setScore ( player1.getScore () + 1 );
+                if(board[row][col] == player2.getColor ())
+                    player2.setScore ( player2.getScore () + 1 );
+
+            }
+        // update the IU from here
+        Log.i ( "Score update", "Player1 : " + player1.getScore () + " | Player2 : " + player2.getScore () );
     }
 
     public boolean[][] findAllValidMoves(Player player){
