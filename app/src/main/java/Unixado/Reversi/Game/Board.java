@@ -7,123 +7,159 @@ public class Board {
 
     private Color[][] board;
     private final GameActivity gameActivity;
-    private boolean[][] validMoves;
 
+    /**
+     * Initialize the game board
+     * @param gameActivity needed to update the UI board resources
+     */
     public Board(GameActivity gameActivity){
         this.gameActivity = gameActivity;
         initializeBoard ();
     }
 
     /**
-     *
-     * @return board 2D array
-     */
-    public Color[][] getBoard(){
-        return this.board.clone ();
-    }
-
-    /**
-     * Update board and update the displayed piece color
+     * Update board and update the displayed disk color displayed on the board
      * @param location location on the board
-     * @param color piece color to assign to the given location
+     * @param color disk color to assign to the given location
      */
-    public void setBoardPiece(PieceLocation location, Color color){
-        this.board[location.getX ()][location.getY ()] = color;
+    public void setBoardDisk ( DiskLocation location, Color color){
+        this.board[location.getRow ()][location.getColumn ()] = color;
         this.gameActivity.setBoardResources ( location, color );
     }
 
-
-    public boolean[][] findAllValidMoves( Player player){
-        this.validMoves = new boolean[8][8];
+    /**
+     * Find all the valid moves for a player
+     *
+     * @param player for whom to find all valid moves
+     * @return a 2D boolean array of valid moves on the board.
+     *         Cells with a true value represent spots on the board
+     *         where the player's move will be valid.
+     */
+    public boolean[][] findAllValidMoves(Player player){
+        boolean[][] validMoves = new boolean[8][8];
 
         for(int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
-                if(this.board[row][col] == Color.NONE){
+                if(this.board[row][col] == Color.BLANK){
 
+                    Move move = new Move ( player, new DiskLocation ( row, col ) );
                     // Check all directions to the selected square to determine if it's a valid moves
-                    boolean N = isValidMove ( player, 1, 0, row, col );
-                    boolean NW = isValidMove ( player, 1, -1, row, col );
-                    boolean NE = isValidMove ( player, 1, 1, row, col );
-                    boolean S = isValidMove ( player, -1, 0, row, col );
-                    boolean SW = isValidMove ( player, -1, -1, row, col );
-                    boolean SE = isValidMove ( player, -1, 1, row, col );
-                    boolean E = isValidMove ( player, 0, 1, row, col );
-                    boolean W = isValidMove ( player, 0, -1, row, col );
+                    boolean n = isValidMove (1, 0, move ); // North
+                    boolean nw = isValidMove ( 1, -1, move ); // NorthWest
+                    boolean ne = isValidMove ( 1, 1, move ); // NorthEast
+                    boolean s = isValidMove ( -1, 0, move ); // South
+                    boolean sw = isValidMove ( -1, -1, move ); // SouthWest
+                    boolean se = isValidMove ( -1, 1, move ); //SouthEast
+                    boolean e = isValidMove ( 0, 1, move ); // East
+                    boolean w = isValidMove ( 0, -1, move ); // West
 
-                    if( N || NW || NE || S || SW || SE || E || W)
-                        this.validMoves[row][col] = true;
-
+                    // if the move is valid in any direction, the move is valid
+                    if( n || nw || ne || s || sw || se || e || w)
+                        validMoves[row][col] = true;
                 }
-
             }
-
-
-        return this.validMoves;
+        return validMoves;
     }
 
     /**
-     *  Check if the position given by the row and column on the board contains the opposite
-     *  player's piece and if the line indicated by adding drow to row and dcol to col eventually
-     *  ends in the player's color
-     * @param player
-     * @param drow
-     * @param dcol
-     * @param row
-     * @param col
-     * @return
+     * Check if the position given by row + drow and col + dcol on the board
+     * contains the opposite player's disk. If so, check if the line indicated by
+     * adding drow to row and dcol to col eventually ends in the player's color; meaning
+     * that one or more opponent disks are surrounded by 2 of the player's disks.
+     *
+     * @param drow delta row specifies the y-direction
+     * @param dcol delta column specifies the x-direction
+     * @param move move containing a the player who moves and the location the player puts the disk
+     * @return if the move is valid in the direction specified by drow and dcol
      */
-    private boolean isValidMove(Player player, int drow, int dcol, int row, int col ){
+    private boolean isValidMove(int drow, int dcol, Move move ){
         Color oppositeColor;
-        if(player.getColor () == Color.BLACK)
+        int row = move.getLocation ().getRow ();
+        int col = move.getLocation ().getColumn ();
+
+        if(move.getPlayer ().getColor () == Color.BLACK)
             oppositeColor = Color.WHITE;
         else oppositeColor = Color.BLACK;
 
-        if(row + drow < 0 || row + drow > 7)
-            return false;
-        if(col + dcol < 0 || col + dcol > 7)
+
+        // if the first next position in drow and dcol is not on the board, then the move in drow and dcol is invalid
+        if(isPositionNotOnBoard ( row + drow, col + dcol ))
             return false;
 
         if(this.board[row + drow][col + dcol] != oppositeColor)
             return false;
 
-        if(row + drow + drow < 0 || row + drow + drow > 7)
+        // if the second next position in drow and dcol is not on the board, then the move in drow and dcol is invalid
+        // as another of the player's disks can't surround an opponent disk.
+        if(isPositionNotOnBoard ( row + drow + drow, col + dcol + dcol ))
             return false;
-        if(col + dcol + dcol < 0 || col + dcol + dcol > 7)
-            return false;
-        return checkLineMatch ( player, drow, dcol, row + drow + drow, col + dcol + dcol );
+
+
+        Move nextMove = new Move ( move.getPlayer (),
+                new DiskLocation ( row + drow + drow, col + dcol + dcol ));
+
+        // If the above conditions are met, check if there is a player's disk surrounding one or more opponent disks
+        return checkLineMatch (drow, dcol, nextMove );
     }
 
     /**
-     * Check if there is a piece with the player's color on the line defined from
-     * row and col to any line further by adding drow and dcol to row and col
-     * @param player
-     * @return
+     * Check if a position is not on the board.
+     * @param row row on the board
+     * @param col column on the board
+     * @return if the position specifies by row and col are on the board
      */
-    private boolean checkLineMatch(Player player, int drow, int dcol, int row, int col ){
-        if(board[row][col] == player.getColor ())
+    private boolean isPositionNotOnBoard ( int row, int col){
+        if(row < 0 || row > 7)
             return true;
-        if(row + drow < 0 || row + drow > 7)
+        return col < 0 || col > 7;
+    }
+
+    /**
+     * Check if there is a disk with the player's color on the line defined from
+     * row and col to any line further by adding drow and dcol to row and col
+     * @param drow delta row specifies the y-direction
+     * @param dcol delta column specifies the x-direction
+     * @param move move containing a the player who moves and the location
+     *             on the board that defines the starting point of our line
+     * @return whether there is a player's disk at the end of the line
+     *         starting from row and col in the direction of drow and dcol
+     */
+    private boolean checkLineMatch(int drow, int dcol, Move move ){
+        Color playerColor = move.getPlayer ().getColor ();
+        int row = move.getLocation ().getRow ();
+        int col = move.getLocation ().getColumn ();
+
+        if(board[row][col] == playerColor)
+            return true;
+
+        if(this.board[row][col] == Color.BLANK)
             return false;
-        if(col + dcol < 0 || col + dcol > 7)
+
+        // if the next position in drow and dcol direction is not on the board,
+        // we have reached the end of ur line without finding another of the player's disks
+        if(isPositionNotOnBoard ( row + drow, col + dcol ))
             return false;
+
+        Move nextMove = new Move ( move.getPlayer (),
+                new DiskLocation ( row + drow, col + dcol ));
 
         // do a recursive check
-        return checkLineMatch ( player, drow, dcol, row + drow, col + dcol);
+        return checkLineMatch (drow, dcol, nextMove);
     }
 
     /**
-     * Assign Color.NONE to all squares on the board
+     * Assign Color.BLANK to all squares on the board
      */
     private void createEmptyBoard(){
         this.board = new Color[8][8];
 
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++)
-                this.board[row][col] = Color.NONE;
+                this.board[row][col] = Color.BLANK;
     }
 
     /**
-     * Set the starting position of black and white pieces
+     * Set the starting position of black and white disks
      *
      * Starting position of the game:
      * - - - - - - - -
@@ -135,15 +171,68 @@ public class Board {
      * - - - - - - - -
      */
     private void setInitialBoardState(){
-        setBoardPiece ( new PieceLocation ( 3, 3 ), Color.BLACK );
-        setBoardPiece ( new PieceLocation ( 4, 4 ), Color.BLACK );
-        setBoardPiece ( new PieceLocation ( 4, 3 ), Color.WHITE );
-        setBoardPiece ( new PieceLocation ( 3, 4 ), Color.WHITE );
+        setBoardDisk ( new DiskLocation ( 3, 3 ), Color.BLACK );
+        setBoardDisk ( new DiskLocation ( 4, 4 ), Color.BLACK );
+        setBoardDisk ( new DiskLocation ( 4, 3 ), Color.WHITE );
+        setBoardDisk ( new DiskLocation ( 3, 4 ), Color.WHITE );
     }
 
+    /**
+     * Create an empty board and set the initial position of disks
+     */
     private void initializeBoard(){
         createEmptyBoard ();
         setInitialBoardState ();
     }
-    
+
+    /**
+     * Check id a flip in any direction is possible,
+     * is a flip is possible, flip the required disks
+     * @param move move that causes the opponent disks to flip
+     */
+    public void flipOpponentDisks ( Move move){
+        // Do all possible flips in every direction
+
+        flipLine( 1, 0, move); // North
+        flipLine( 1, -1, move); // NorthWest
+        flipLine( 1, 1, move); // NorthEast
+        flipLine( -1, 0, move); // South
+        flipLine( -1, -1, move); // SouthWest
+        flipLine( -1, 1, move); // SouthEast
+        flipLine( 0, 1, move); // East
+        flipLine( 0, -1, move); // West
+    }
+
+    /**
+     * Flip disks that need to be flipped on the line starting from the
+     * row and column defined by move and in the direction of drow and dcol.
+     * @param drow delta row specifies the y-direction
+     * @param dcol delta column specifies the x-direction
+     * @param move move that causes the opponent disks to flip
+     * @return true if there could exist a disk that would need to be flipped
+     */
+    private boolean flipLine(int drow, int dcol, Move move) {
+        int row = move.getLocation ().getRow ();
+        int col = move.getLocation ().getColumn ();
+        Color playerColor = move.getPlayer ().getColor ();
+
+        if(isPositionNotOnBoard ( row + drow, col + dcol ))
+            return false;
+
+        if (this.board[row + drow][col + dcol] == Color.BLANK)
+            return false;
+
+        if (this.board[row + drow][col + dcol] == playerColor)
+            return true;
+
+        else {
+            Move nextMove = new Move ( move.getPlayer () , new DiskLocation ( row + drow, col + dcol ) );
+
+            // do a recursive check
+            if (flipLine (drow, dcol, nextMove )){
+                setBoardDisk ( new DiskLocation ( row + drow, col + dcol ), playerColor);
+                return true;
+            } else return false;
+        }
+    }
 }

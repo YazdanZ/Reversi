@@ -2,7 +2,7 @@ package Unixado.Reversi.UserInterface;
 
 import Unixado.Reversi.Game.Game;
 import Unixado.Reversi.Game.Move;
-import Unixado.Reversi.Game.PieceLocation;
+import Unixado.Reversi.Game.DiskLocation;
 import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
@@ -63,7 +63,6 @@ public class GameActivity extends AppCompatActivity {
         createBoardListeners ();
         new Thread(new Runnable() {
             public void run() {
-                Log.i ("Game Activity", "Creating a new game ...");
                 createGame();
             }
         }).start();
@@ -83,12 +82,12 @@ public class GameActivity extends AppCompatActivity {
     /**
      *
      * @param location location on the board
-     * @param color piece color to assign to the given location
+     * @param color disk color to assign to the given location
      */
-    public void setBoardResources( PieceLocation location, Color color ){
+    public void setBoardResources( DiskLocation location, Color color ){
 
         // Specified square on the board
-        ImageView square = this.boardResources[location.getX ()][location.getY ()];
+        ImageView square = this.boardResources[location.getRow ()][location.getColumn ()];
 
         switch (color){
             case BLACK:
@@ -97,8 +96,8 @@ public class GameActivity extends AppCompatActivity {
             case WHITE:
                 square.setImageResource ( R.drawable.ic_circlewhite );
                 break;
-            case NONE:
-                // Remove the white/black piece from the square
+            case BLANK:
+                // Remove the white/black disk from the square
                 square.setImageResource ( 0 );
                 break;
         }
@@ -134,7 +133,7 @@ public class GameActivity extends AppCompatActivity {
                         Log.i ( "Game Activity", "cell [" + finalRow + "][" + finalCol + "] has been selected");
                         //TODO
                         // Create a move
-                        Move move = new Move (game.getCurrentPlayer (), new PieceLocation ( finalRow, finalCol ) );
+                        Move move = new Move (game.getCurrentPlayer (), new DiskLocation ( finalRow, finalCol ) );
                         game.addMove ( move );
                     }
                 } );
@@ -142,6 +141,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void createGame(){
+        Log.i ("Game Activity", "Creating a new game ...");
         this.game = new Game ( this );
     }
 }
