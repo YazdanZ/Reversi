@@ -88,7 +88,7 @@ public class GameActivity extends AppCompatActivity {
     public void setBoardResources( PieceLocation location, Color color ){
 
         // Specified square on the board
-        ImageView square = this.boardResources[location.getX ()][location.getY ()];
+        ImageView square = this.boardResources[location.getRow ()][location.getColumn ()];
 
         switch (color){
             case BLACK:
@@ -97,7 +97,7 @@ public class GameActivity extends AppCompatActivity {
             case WHITE:
                 square.setImageResource ( R.drawable.ic_circlewhite );
                 break;
-            case NONE:
+            case BLANK:
                 // Remove the white/black piece from the square
                 square.setImageResource ( 0 );
                 break;

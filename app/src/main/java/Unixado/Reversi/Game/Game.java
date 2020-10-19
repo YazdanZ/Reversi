@@ -45,7 +45,7 @@ public class Game {
 //            return;
 
         boolean[][] validMoves = this.board.findAllValidMoves ( move.getPlayer () );
-        if(validMoves[move.getLocation ().getX ()][move.getLocation ().getY ()]){
+        if(validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]){
             this.moves.push ( move );
 
 
@@ -53,6 +53,7 @@ public class Game {
 
             // add the result to the board
             this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
+            this.board.flipOpponentPieces ( move );
             toggleTurn ();
             isGameOver ();
 
@@ -81,7 +82,7 @@ public class Game {
 
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++){
-                if(this.board.getBoard ()[i][j] == Color.NONE)
+                //if(this.board.getBoard ()[i][j] == Color.BLANK)
                     return false;
             }
         Log.i ("Game", "Game is over");
