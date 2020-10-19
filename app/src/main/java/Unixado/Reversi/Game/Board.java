@@ -132,6 +132,9 @@ public class Board {
         if(board[row][col] == playerColor)
             return true;
 
+        if(this.board[row][col] == Color.BLANK)
+            return false;
+
         // if the next position in drow and dcol direction is not on the board,
         // we have reached the end of ur line without finding another of the player's pieces
         if(isPositionNotOnBoard ( row + drow, col + dcol ))
@@ -145,7 +148,7 @@ public class Board {
     }
 
     /**
-     * Assign Color.NONE to all squares on the board
+     * Assign Color.BLANK to all squares on the board
      */
     private void createEmptyBoard(){
         this.board = new Color[8][8];
