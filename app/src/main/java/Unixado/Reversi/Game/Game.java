@@ -40,26 +40,24 @@ public class Game {
     public void addMove(Move move){
         // Verify the move
 
-        // Verify if there is already a piece at the move's location
-//        if(this.board.getBoard ()[move.getLocation ().getX ()][move.getLocation ().getY ()] != Color.NONE)
-//            return;
-
         boolean[][] validMoves = this.board.findAllValidMoves ( move.getPlayer () );
-        if(validMoves[move.getLocation ().getX ()][move.getLocation ().getY ()]){
+        if(validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]){
+
+            // move is valid push it to the move stack
             this.moves.push ( move );
 
+            // add newly added disk to the board
+            this.board.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
 
-            // find opponent pieces that will be flipped
+            // flip opponent disks that have been captured by this move
+            this.board.flipOpponentDisks ( move );
 
-            // add the result to the board
-            this.board.setBoardPiece ( move.getLocation (), move.getPlayer ().getColor () );
+            // change turns
             toggleTurn ();
+
+            // verify if the game is over
             isGameOver ();
-
         }
-
-        // Verify if player's turn
-        // If above conditions are met, add the move to the queue
     }
 
     public Player getCurrentPlayer(){
