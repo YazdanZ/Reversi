@@ -154,8 +154,10 @@ public class Board {
         this.board = new Color[8][8];
 
         for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++)
+            for (int col = 0; col < 8; col++){
                 this.board[row][col] = Color.BLANK;
+                setBoardDisk ( new DiskLocation ( row, col ), Color.BLANK );
+            }
     }
 
     /**

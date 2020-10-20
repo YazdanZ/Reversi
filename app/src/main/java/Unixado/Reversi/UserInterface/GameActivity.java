@@ -98,7 +98,7 @@ public class GameActivity extends AppCompatActivity {
                 break;
             case BLANK:
                 // Remove the white/black disk from the square
-                square.setImageResource ( 0 );
+                square.setImageResource ( R.drawable.ic_circleblank );
                 break;
         }
     }
