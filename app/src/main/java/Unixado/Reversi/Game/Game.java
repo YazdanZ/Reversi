@@ -14,7 +14,7 @@ public class Game {
     private final Player player2;
     private final Board board;
     private Stack<Move> moves;
-
+    private GameActivity gameActivity;
 
     public Game( GameActivity gameActivity ){
 
@@ -23,14 +23,15 @@ public class Game {
         // Create and set board with initial states according to othello version of reversi
         this.board = new Board ( gameActivity );
 
+        this.gameActivity = gameActivity;
 /*         For now, let's just hardcode 2 human players
          We will change this once the "Settings" is Implemented
          Give the user the option to choose their own colors,
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new RandomPlayer ( Color.BLACK, this );
-        this.player2 = new HumanPlayer ( Color.WHITE );
+        this.player1 = new HumanPlayer ( Color.WHITE );
+        this.player2 = new HumanPlayer ( Color.BLACK );
 
 /*
          If the player is an AI and has the first move in the game, make the player take action
@@ -44,6 +45,7 @@ public class Game {
     }
 
     public void addMove(Move move){
+
         // Verify the move
         if(move.getPlayer () != getCurrentPlayer ())
             return;
@@ -116,6 +118,7 @@ public class Game {
 
             }
         // update the IU from here
+        this.gameActivity.updateScoreBoard ( this.player1, this.player2 );
         Log.i ( "Score update", "Player1 : " + player1.getScore () + " | Player2 : " + player2.getScore () );
     }
 

@@ -4,7 +4,6 @@ import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.Game.DiskLocation;
 import Unixado.Reversi.Game.Game;
 import Unixado.Reversi.Game.Move;
-
 import java.util.ArrayList;
 import java.util.Random;
 

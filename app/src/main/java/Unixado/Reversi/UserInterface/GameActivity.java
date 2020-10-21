@@ -4,9 +4,11 @@ import Unixado.Reversi.Game.Game;
 import Unixado.Reversi.Game.Move;
 import Unixado.Reversi.Game.DiskLocation;
 import Unixado.Reversi.Game.Color;
+import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.os.Build;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
@@ -24,6 +26,9 @@ public class GameActivity extends AppCompatActivity {
     private CircularRevealAnimation circularRevealAnimation;
     private ImageView[][] boardResources;
     private Game game;
+    private ImageView whiteScoreBand, blackScoreBand ;
+    private TextView blackScoreText ,whiteScoreText;
+    Animation whiteOpeningAnimation, blackOpeningAnimation, whiteClosingAnimation, blackClosingAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,7 @@ public class GameActivity extends AppCompatActivity {
                         // 64.5 dps is the dps of the center of the play button from the bottom of the screen
                         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
-                        circularRevealAnimation.AnimateOpening ( 0, x, y );
+                        circularRevealAnimation.AnimateOpening ( 1000, x, y );
 
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -61,39 +66,13 @@ public class GameActivity extends AppCompatActivity {
 
 
         fetchBoardResources ();
+        fetchScoreBoardResources ();
         createBoardListeners ();
         new Thread(new Runnable() {
             public void run() {
                 createGame();
             }
         }).start();
-
-        ImageView imageView = findViewById ( R.id.imageView );
-        ImageView imageView1 = findViewById ( R.id.imageView3 );
-        TextView textView = findViewById ( R.id.textView );
-        TextView textView1 = findViewById ( R.id.textView3 );
-//
-//        TranslateAnimation animation = new TranslateAnimation(-200.0f, 0.0f, 0.0f, 0.0f);
-//        TranslateAnimation animation2 = new TranslateAnimation(200.0f, 300f, 0.0f, 0.0f);
-//
-//        animation.setDuration(1500);
-//        animation2.setDuration ( 1500 );
-//        imageView.startAnimation ( animation );
-//        imageView1.startAnimation ( animation2 );
-
-        Animation animation = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation1 );
-        Animation animation1 = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation2 );
-        Animation animation2 = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation3 );
-        Animation animation3 = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation4 );
-
-        imageView.setAnimation ( animation );
-        //imageView1.setAnimation ( animation1 );
-
-        //imageView.setAnimation ( animation2 );
-        imageView1.setAnimation ( animation3 );
-        textView.setAnimation ( animation3 );
-        textView1.setAnimation ( animation );
-
     }
 
 
@@ -105,6 +84,47 @@ public class GameActivity extends AppCompatActivity {
 
         circularRevealAnimation.AnimateClosing ( 400, x, y );
     }
+
+    public void updateScoreBoard( Player player1, Player player2 ){
+
+        Player whitePlayer;
+        Player blackPlayer;
+
+        if(player1.getColor () == Color.WHITE){
+            whitePlayer = player1;
+            blackPlayer = player2;
+        }
+        else{
+            whitePlayer = player2;
+            blackPlayer = player1;
+        }
+
+        //this.whiteScoreText.setText ( whitePlayer.getScore () );
+        this.whiteScoreText.setText ( Integer.toString ( whitePlayer.getScore () ) );
+        this.blackScoreText.setText ( Integer.toString ( blackPlayer.getScore () ) );
+
+        if(whitePlayer.isTurn ()){
+            this.whiteScoreText.setAnimation ( this.whiteOpeningAnimation );
+            this.whiteScoreText.startAnimation ( this.whiteOpeningAnimation );
+            this.whiteScoreBand.setAnimation ( this.whiteOpeningAnimation );
+            this.whiteScoreBand.startAnimation ( this.whiteOpeningAnimation );
+            this.blackScoreText.setAnimation ( this.blackClosingAnimation );
+            this.blackScoreText.startAnimation ( this.blackClosingAnimation );
+            this.blackScoreBand.setAnimation ( this.blackClosingAnimation );
+            this.whiteScoreBand.startAnimation ( this.blackClosingAnimation );
+        }
+        else {
+            this.whiteScoreText.setAnimation ( this.whiteClosingAnimation );
+            this.whiteScoreText.startAnimation ( this.whiteClosingAnimation );
+            this.whiteScoreBand.setAnimation ( this.whiteClosingAnimation );
+            this.whiteScoreBand.startAnimation ( this.whiteClosingAnimation );
+            this.blackScoreText.setAnimation ( this.blackOpeningAnimation );
+            this.blackScoreText.startAnimation ( this.blackOpeningAnimation );
+            this.blackScoreBand.setAnimation ( this.blackOpeningAnimation );
+            this.blackScoreBand.setAnimation ( this.blackOpeningAnimation );
+        }
+    }
+
 
     /**
      *
@@ -149,6 +169,20 @@ public class GameActivity extends AppCompatActivity {
             }
     }
 
+    private void fetchScoreBoardResources (){
+
+        this.whiteScoreBand = findViewById ( R.id.whiteScoreBand );
+        this.blackScoreBand = findViewById ( R.id.blackScoreBand );
+        this.blackScoreText = findViewById ( R.id.blackScore );
+        this.whiteScoreText = findViewById ( R.id.whiteScore );
+
+        this.whiteOpeningAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_expand_scoreboard_animation );
+        this.blackOpeningAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_expand_scoreboard_animation );
+        this.whiteClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_collapse_scoreboard_animation );
+        this.blackClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_collapse_scoreboard_animation );
+
+    }
+
     private void createBoardListeners (){
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
@@ -158,6 +192,7 @@ public class GameActivity extends AppCompatActivity {
                     @Override
                     public void onClick ( View v ) {
                         Log.i ( "Game Activity", "cell [" + finalRow + "][" + finalCol + "] has been selected");
+
                         //TODO
                         // Create a move
                         Move move = new Move (game.getCurrentPlayer (), new DiskLocation ( finalRow, finalCol ) );
