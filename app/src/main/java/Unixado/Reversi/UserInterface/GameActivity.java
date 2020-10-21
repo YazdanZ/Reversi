@@ -7,9 +7,8 @@ import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
-import android.app.Activity;
 import android.os.Build;
-import android.os.SystemClock;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
@@ -29,7 +28,8 @@ public class GameActivity extends AppCompatActivity {
     private Game game;
     private ImageView whiteScoreBand, blackScoreBand ;
     private TextView blackScoreText ,whiteScoreText;
-    Animation whiteOpeningAnimation, blackOpeningAnimation, whiteClosingAnimation, blackClosingAnimation;
+    Animation whiteOpeningAnimation, blackOpeningAnimation, whiteClosingAnimation, blackClosingAnimation,
+    whiteWinsAnimation, whiteLosesAnimation, blackWinsAnimation, blackLosesAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
                         // 64.5 dps is the dps of the center of the play button from the bottom of the screen
                         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
-                        circularRevealAnimation.AnimateOpening ( 1000, x, y );
+                        circularRevealAnimation.AnimateOpening ( 0, x, y );
 
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -69,12 +69,27 @@ public class GameActivity extends AppCompatActivity {
         fetchScoreBoardResources ();
         createBoardListeners ();
 
+//
+//        new Thread(new Runnable() {
+//            public void run() {
+//                createGame();
+//            }
+//        }).start();
 
-        new Thread(new Runnable() {
-            public void run() {
-                createGame();
+        this.whiteScoreText.startAnimation ( this.whiteOpeningAnimation );
+        this.whiteScoreBand.startAnimation ( this.whiteOpeningAnimation );
+        this.blackScoreText.startAnimation ( this.blackClosingAnimation );
+        this.blackScoreBand.startAnimation ( this.blackClosingAnimation );
+        new CountDownTimer (5000, 2000) {
+
+            public void onTick(long millisUntilFinished) {
             }
-        }).start();
+
+            public void onFinish() {
+                blackScoreText.startAnimation ( blackWinsAnimation );
+                blackScoreBand.startAnimation ( blackWinsAnimation );
+            }
+        }.start();
 
 
     }
@@ -89,29 +104,12 @@ public class GameActivity extends AppCompatActivity {
         circularRevealAnimation.AnimateClosing ( 400, x, y );
     }
 
-    /**
-     * Update the scoreboard with scores and animate player turns
-     * @param player1 first player
-     * @param player2 second player
-     */
-    public void updateScoreBoard( Player player1, Player player2 ){
+    public void updateScoreBoard( int whitePlayerScore, int blackPlayerScore, Color playerTurn ){
 
-        Player whitePlayer;
-        Player blackPlayer;
+        this.whiteScoreText.setText ( Integer.toString ( whitePlayerScore ) );
+        this.blackScoreText.setText ( Integer.toString ( blackPlayerScore ) );
 
-        if(player1.getColor () == Color.WHITE){
-            whitePlayer = player1;
-            blackPlayer = player2;
-        }
-        else{
-            whitePlayer = player2;
-            blackPlayer = player1;
-        }
-
-        this.whiteScoreText.setText ( Integer.toString ( whitePlayer.getScore () ) );
-        this.blackScoreText.setText ( Integer.toString ( blackPlayer.getScore () ) );
-
-        if(whitePlayer.isTurn ()){
+        if(playerTurn == Color.WHITE){
             this.whiteScoreText.startAnimation ( this.whiteOpeningAnimation );
             this.whiteScoreBand.startAnimation ( this.whiteOpeningAnimation );
             this.blackScoreText.startAnimation ( this.blackClosingAnimation );
@@ -125,6 +123,28 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void showGameResults(Player winner){
+        if(winner.getColor () == Color.WHITE){
+            //white wins
+            this.whiteScoreText.setText ( "White Wins " );
+            this.whiteScoreText.startAnimation ( this.whiteWinsAnimation );
+            this.whiteScoreBand.startAnimation ( this.whiteWinsAnimation );
+            this.blackScoreText.startAnimation ( this.blackLosesAnimation );
+            this.blackScoreBand.startAnimation ( this.blackLosesAnimation );
+        }
+        if(winner.getColor () == Color.BLACK){
+            //black wins
+            this.blackScoreText.setText ( "Black Wins" );
+            this.blackScoreText.startAnimation ( this.blackWinsAnimation );
+            this.blackScoreBand.startAnimation ( this.blackWinsAnimation );
+            this.whiteScoreText.startAnimation ( this.whiteLosesAnimation );
+            this.whiteScoreBand.startAnimation ( this.whiteLosesAnimation );
+        }
+    }
+
+    public void showGameResults(){
+        // it's a tie
+    }
 
     /**
      *
@@ -183,7 +203,10 @@ public class GameActivity extends AppCompatActivity {
         this.blackOpeningAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_expand_scoreboard_animation );
         this.whiteClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_collapse_scoreboard_animation );
         this.blackClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_collapse_scoreboard_animation );
-
+        this.whiteWinsAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_wins_scoreboard_animation_isturn );
+        this.whiteLosesAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_loses_scoreboard_animation_isturn );
+        this.blackWinsAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_wins_scoreboard_animation_isturn );
+        this.blackLosesAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_loses_scoreboard_animation_isturn );
     }
 
     /**

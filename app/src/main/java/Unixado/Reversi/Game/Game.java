@@ -31,7 +31,7 @@ public class Game {
         this.player1 = new RandomPlayer ( Color.WHITE , this);
         this.player2 = new HumanPlayer ( Color.BLACK );
 
-        this.gameActivity.updateScoreBoard ( player1, player2 );
+        updateScoreBoard ();
 /*
 
          If the player is an AI and has the first move in the game, make the player take action
@@ -95,7 +95,12 @@ public class Game {
     }
 
     private void gameOver(){
-
+        if(this.player1.getScore () > this.player2.getScore ())
+            this.gameActivity.showGameResults (player1);
+        if(this.player2.getScore () > this.player1.getScore ())
+            this.gameActivity.showGameResults (player2);
+        else
+            this.gameActivity.showGameResults ();
     }
 
     /**
@@ -114,10 +119,23 @@ public class Game {
                     player1.setScore ( player1.getScore () + 1 );
                 if(board[row][col] == player2.getColor ())
                     player2.setScore ( player2.getScore () + 1 );
-
             }
         // update the IU from here
-        this.gameActivity.updateScoreBoard ( this.player1, this.player2 );
+        updateScoreBoard ();
+    }
+
+    private void updateScoreBoard(){
+        int blackPlayerScore, whitePlayerScore;
+        if(player1.getColor () == Color.BLACK){
+            blackPlayerScore = player1.getScore ();
+            whitePlayerScore = player2.getScore ();
+        }
+        else {
+            whitePlayerScore = player1.getScore ();
+            blackPlayerScore = player2.getScore ();
+        }
+
+        this.gameActivity.updateScoreBoard (whitePlayerScore, blackPlayerScore, getCurrentPlayer ().getColor () );
     }
 
     public boolean[][] findAllValidMoves(Player player){
