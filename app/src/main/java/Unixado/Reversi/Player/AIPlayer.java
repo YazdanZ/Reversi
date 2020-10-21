@@ -15,8 +15,10 @@ public abstract class AIPlayer extends Player {
     public void toggleTurn () {
         super.toggleTurn ();
         if(super.isTurn ())
-            takeAction();
+            takeActionWithDelay ();
     }
 
-    public abstract void takeAction();
+    protected abstract void takeAction();
+
+    public abstract void takeActionWithDelay();
 }
