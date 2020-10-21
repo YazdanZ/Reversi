@@ -5,6 +5,7 @@ import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.Stack;
@@ -30,7 +31,7 @@ public class Game {
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new HumanPlayer ( Color.WHITE );
+        this.player1 = new RandomPlayer ( Color.WHITE , this);
         this.player2 = new HumanPlayer ( Color.BLACK );
 
 /*
