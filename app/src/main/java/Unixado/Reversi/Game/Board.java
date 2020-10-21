@@ -62,6 +62,47 @@ public class Board {
     }
 
     /**
+     * Check id a flip in any direction is possible,
+     * is a flip is possible, flip the required disks
+     * @param move move that causes the opponent disks to flip
+     */
+    public void flipOpponentDisks ( Move move){
+        // Do all possible flips in every direction
+
+        flipLine( 1, 0, move); // North
+        flipLine( 1, -1, move); // NorthWest
+        flipLine( 1, 1, move); // NorthEast
+        flipLine( -1, 0, move); // South
+        flipLine( -1, -1, move); // SouthWest
+        flipLine( -1, 1, move); // SouthEast
+        flipLine( 0, 1, move); // East
+        flipLine( 0, -1, move); // West
+    }
+
+    /**
+     * find if a player has any valid moves
+     * @param player player
+     * @return if the player has at least one valid move
+     */
+    public boolean playerHasNoValidMoves ( Player player){
+        boolean[][] validMoves = findAllValidMoves ( player );
+        for (int row = 0; row < 8; row++ )
+            for (int col = 0; col < 8; col++){
+                if(validMoves[row][col])
+                    return false;
+            }
+        return true;
+    }
+
+    /**
+     *
+     * @return game board array
+     */
+    public Color[][] getBoard(){
+        return this.board.clone ();
+    }
+
+    /**
      * Check if the position given by row + drow and col + dcol on the board
      * contains the opposite player's disk. If so, check if the line indicated by
      * adding drow to row and dcol to col eventually ends in the player's color; meaning
@@ -188,24 +229,6 @@ public class Board {
     }
 
     /**
-     * Check id a flip in any direction is possible,
-     * is a flip is possible, flip the required disks
-     * @param move move that causes the opponent disks to flip
-     */
-    public void flipOpponentDisks ( Move move){
-        // Do all possible flips in every direction
-
-        flipLine( 1, 0, move); // North
-        flipLine( 1, -1, move); // NorthWest
-        flipLine( 1, 1, move); // NorthEast
-        flipLine( -1, 0, move); // South
-        flipLine( -1, -1, move); // SouthWest
-        flipLine( -1, 1, move); // SouthEast
-        flipLine( 0, 1, move); // East
-        flipLine( 0, -1, move); // West
-    }
-
-    /**
      * Flip disks that need to be flipped on the line starting from the
      * row and column defined by move and in the direction of drow and dcol.
      * @param drow delta row specifies the y-direction
@@ -236,24 +259,5 @@ public class Board {
                 return true;
             } else return false;
         }
-    }
-
-    /**
-     * find if a player has any valid moves
-     * @param player player
-     * @return if the player has at least one valid move
-     */
-    public boolean playerHasNoValidMoves ( Player player){
-        boolean[][] validMoves = findAllValidMoves ( player );
-        for (int row = 0; row < 8; row++ )
-            for (int col = 0; col < 8; col++){
-                if(validMoves[row][col])
-                    return false;
-            }
-        return true;
-    }
-
-    public Color[][] getBoard(){
-        return this.board.clone ();
     }
 }

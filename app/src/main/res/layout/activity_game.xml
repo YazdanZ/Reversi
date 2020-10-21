@@ -415,16 +415,17 @@
             android:layout_height="wrap_content" android:id="@+id/blackScore"
             app:layout_constraintTop_toTopOf="@+id/blackScoreBand"
             app:layout_constraintBottom_toBottomOf="@+id/blackScoreBand" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/blackScoreBand" app:layout_constraintHorizontal_bias="0.06"
-            android:textColor="@color/white" android:textSize="26sp"/>
+            app:layout_constraintStart_toStartOf="@+id/blackScoreBand" app:layout_constraintHorizontal_bias="0.05"
+            android:textColor="@color/white" android:textSize="26sp"
+            android:fontFamily="sans-serif-thin"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/whiteScore"
             app:layout_constraintTop_toTopOf="@+id/whiteScoreBand"
             app:layout_constraintBottom_toBottomOf="@+id/whiteScoreBand"
             app:layout_constraintEnd_toEndOf="@+id/whiteScoreBand"
-            app:layout_constraintStart_toStartOf="@+id/whiteScoreBand" app:layout_constraintHorizontal_bias="0.94"
-            android:textSize="26sp" android:textColor="@color/black"/>
+            app:layout_constraintStart_toStartOf="@+id/whiteScoreBand" app:layout_constraintHorizontal_bias="0.95"
+            android:textSize="26sp" android:textColor="@color/black" android:fontFamily="sans-serif-thin"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

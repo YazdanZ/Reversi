@@ -5,27 +5,24 @@ import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
-import android.os.SystemClock;
-import android.util.Log;
 
-import java.util.Stack;
 
 public class Game {
+
     private final Player player1;
     private final Player player2;
     private final Board board;
-    private Stack<Move> moves;
-    private GameActivity gameActivity;
+    private final GameActivity gameActivity;
 
     public Game( GameActivity gameActivity ){
 
-        this.moves = new Stack<> ();
+        this.gameActivity = gameActivity;
 
         // Create and set board with initial states according to othello version of reversi
-        this.board = new Board ( gameActivity );
+        this.board = new Board ( this.gameActivity );
 
-        this.gameActivity = gameActivity;
-/*         For now, let's just hardcode 2 human players
+
+        /*         For now, let's just hardcode 2 human players
          We will change this once the "Settings" is Implemented
          Give the user the option to choose their own colors,
          possibly the possibility to choose which color goes first
@@ -34,10 +31,12 @@ public class Game {
         this.player1 = new RandomPlayer ( Color.WHITE , this);
         this.player2 = new HumanPlayer ( Color.BLACK );
 
+        this.gameActivity.updateScoreBoard ( player1, player2 );
 /*
+
          If the player is an AI and has the first move in the game, make the player take action
          this has to be done only once as the AI player will automatically move when the isTurn
-         field is set to true thought Player.toggleTurn()
+         field is set to true through Player.toggleTurn()
 */
         if(player1.isTurn () && player1 instanceof AIPlayer)
             ((AIPlayer) player1).takeActionWithDelay ();
@@ -53,8 +52,6 @@ public class Game {
 
         boolean[][] validMoves = findAllValidMoves ( move.getPlayer () );
         if(validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]){
-            // move is valid push it to the move stack
-            this.moves.push ( move );
 
             // add newly added disk to the board
             this.board.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
@@ -62,23 +59,24 @@ public class Game {
             // flip opponent disks that have been captured by this move
             this.board.flipOpponentDisks ( move );
 
-            // Update player's score
-
             // change turns
             toggleTurn ();
 
+            // Update player scores
             updateScores ();
         }
 
         // toggle turn if the current player has no valid moves
         // show that the player has no valid moves on the UI
-        if(this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
+        if(this.board.playerHasNoValidMoves ( getCurrentPlayer () )){
             toggleTurn ();
+            updateScores ();
+        }
 
         // Show that the second player has no valid moves on the UI
         // if none of the players have a valid move then the game is over
         if(this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
-            gameIsOver ();
+            gameOver ();
 
     }
 
@@ -88,21 +86,21 @@ public class Game {
         return player2;
     }
 
+    /**
+     * switch turns
+     */
     private void toggleTurn (){
         player1.toggleTurn ();
         player2.toggleTurn ();
     }
 
-    private boolean isGameOver(){
-        return true;
+    private void gameOver(){
+
     }
 
-    private void gameIsOver(){
-        Log.i ("Game Over", "The game is over");
-
-        // find the winner and show it on the UI
-    }
-
+    /**
+     * Update player scores (number of disks on the board)
+     */
     private void updateScores(){
         // reset both player scores
         player1.setScore ( 0 );
@@ -120,7 +118,6 @@ public class Game {
             }
         // update the IU from here
         this.gameActivity.updateScoreBoard ( this.player1, this.player2 );
-        Log.i ( "Score update", "Player1 : " + player1.getScore () + " | Player2 : " + player2.getScore () );
     }
 
     public boolean[][] findAllValidMoves(Player player){

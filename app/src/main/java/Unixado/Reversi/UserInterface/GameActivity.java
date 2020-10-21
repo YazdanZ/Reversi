@@ -7,6 +7,7 @@ import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
+import android.app.Activity;
 import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
@@ -64,15 +65,18 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-
         fetchBoardResources ();
         fetchScoreBoardResources ();
         createBoardListeners ();
+
+
         new Thread(new Runnable() {
             public void run() {
                 createGame();
             }
         }).start();
+
+
     }
 
 
@@ -85,6 +89,11 @@ public class GameActivity extends AppCompatActivity {
         circularRevealAnimation.AnimateClosing ( 400, x, y );
     }
 
+    /**
+     * Update the scoreboard with scores and animate player turns
+     * @param player1 first player
+     * @param player2 second player
+     */
     public void updateScoreBoard( Player player1, Player player2 ){
 
         Player whitePlayer;
@@ -99,28 +108,19 @@ public class GameActivity extends AppCompatActivity {
             blackPlayer = player1;
         }
 
-        //this.whiteScoreText.setText ( whitePlayer.getScore () );
         this.whiteScoreText.setText ( Integer.toString ( whitePlayer.getScore () ) );
         this.blackScoreText.setText ( Integer.toString ( blackPlayer.getScore () ) );
 
         if(whitePlayer.isTurn ()){
-            this.whiteScoreText.setAnimation ( this.whiteOpeningAnimation );
             this.whiteScoreText.startAnimation ( this.whiteOpeningAnimation );
-            this.whiteScoreBand.setAnimation ( this.whiteOpeningAnimation );
             this.whiteScoreBand.startAnimation ( this.whiteOpeningAnimation );
-            this.blackScoreText.setAnimation ( this.blackClosingAnimation );
             this.blackScoreText.startAnimation ( this.blackClosingAnimation );
-            this.blackScoreBand.setAnimation ( this.blackClosingAnimation );
             this.blackScoreBand.startAnimation ( this.blackClosingAnimation );
         }
         else {
-            this.whiteScoreText.setAnimation ( this.whiteClosingAnimation );
             this.whiteScoreText.startAnimation ( this.whiteClosingAnimation );
-            this.whiteScoreBand.setAnimation ( this.whiteClosingAnimation );
             this.whiteScoreBand.startAnimation ( this.whiteClosingAnimation );
-            this.blackScoreText.setAnimation ( this.blackOpeningAnimation );
             this.blackScoreText.startAnimation ( this.blackOpeningAnimation );
-            this.blackScoreBand.setAnimation ( this.blackOpeningAnimation );
             this.blackScoreBand.setAnimation ( this.blackOpeningAnimation );
         }
     }
@@ -169,6 +169,9 @@ public class GameActivity extends AppCompatActivity {
             }
     }
 
+    /**
+     * fetch the animations, image views and text views of the score board
+     */
     private void fetchScoreBoardResources (){
 
         this.whiteScoreBand = findViewById ( R.id.whiteScoreBand );
@@ -183,6 +186,9 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Create listeners for image views making the game board
+     */
     private void createBoardListeners (){
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++){
