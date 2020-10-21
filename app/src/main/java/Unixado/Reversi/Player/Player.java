@@ -35,14 +35,26 @@ public abstract class Player {
         this.score = score;
     }
 
+    /**
+     * Toggle the turn. If it was the player's turn, after call to this
+     * method. It won't be the player's turn anymore and vice versa.
+     */
     public void toggleTurn (){
         this.turn = !this.turn;
     }
 
+    /**
+     *
+     * @return if it's the player's turn to play
+     */
     public final boolean isTurn(){
         return this.turn;
     }
 
+    /**
+     *
+     * @return player's color (either white or black)
+     */
     public final Color getColor(){
         return this.color;
     }

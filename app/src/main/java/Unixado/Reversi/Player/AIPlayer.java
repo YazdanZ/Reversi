@@ -6,6 +6,7 @@ import Unixado.Reversi.Game.Game;
 public abstract class AIPlayer extends Player {
 
     protected final Game game;
+
     public AIPlayer ( Color color, Game game ) {
         super ( color );
         this.game = game;
@@ -18,7 +19,16 @@ public abstract class AIPlayer extends Player {
             takeActionWithDelay ();
     }
 
+    /**
+     * the takeAction() method will be different for any AI
+     * this method should always be called from within takeActionWithDelay()
+     * for a more natural and enjoyable game for the user
+     */
     protected abstract void takeAction();
 
+    /**
+     * this method should be implemented to call the takeAction()
+     * method with a delay for a more enjoyable user experience
+     */
     public abstract void takeActionWithDelay();
 }

@@ -6,7 +6,6 @@ import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
 
-
 public class Game {
 
     private final Player player1;
@@ -22,7 +21,7 @@ public class Game {
         this.board = new Board ( this.gameActivity );
 
 
-        /*         For now, let's just hardcode 2 human players
+        /* For now, let's just hardcode 2 players
          We will change this once the "Settings" is Implemented
          Give the user the option to choose their own colors,
          possibly the possibility to choose which color goes first
@@ -31,9 +30,11 @@ public class Game {
         this.player1 = new RandomPlayer ( Color.WHITE , this);
         this.player2 = new HumanPlayer ( Color.BLACK );
 
+        // show the scoreboard for the first time
         updateScoreBoard ();
-/*
 
+
+/*
          If the player is an AI and has the first move in the game, make the player take action
          this has to be done only once as the AI player will automatically move when the isTurn
          field is set to true through Player.toggleTurn()
@@ -80,6 +81,10 @@ public class Game {
 
     }
 
+    /**
+     *
+     * @return the player who has the turn
+     */
     public Player getCurrentPlayer(){
         if(this.player1.isTurn ())
             return player1;
@@ -88,12 +93,18 @@ public class Game {
 
     /**
      * switch turns
+     * if it was player1's turn, it will be player2's turn and vice versa
      */
     private void toggleTurn (){
         player1.toggleTurn ();
         player2.toggleTurn ();
     }
 
+    /**
+     * Defined what happens when the game is over
+     * show the winner on the screen by updating the UI
+     *
+     */
     private void gameOver(){
         if(this.player1.getScore () > this.player2.getScore ())
             this.gameActivity.showGameResults (player1);
@@ -124,6 +135,9 @@ public class Game {
         updateScoreBoard ();
     }
 
+    /**
+     * Call the updateScoreBoard to update the ScoreBoardUI
+      */
     private void updateScoreBoard(){
         int blackPlayerScore, whitePlayerScore;
         if(player1.getColor () == Color.BLACK){
@@ -138,6 +152,13 @@ public class Game {
         this.gameActivity.updateScoreBoard (whitePlayerScore, blackPlayerScore, getCurrentPlayer ().getColor () );
     }
 
+    /**
+     * Wrapper to find moves from the UI.
+     * I didn't want to give Player access to the Board so
+     * I created this wrapper method.
+     * @param player player to find valid moves
+     * @return a boolean 2D array containing valid move tiles as true
+     */
     public boolean[][] findAllValidMoves(Player player){
         return this.board.findAllValidMoves ( player );
     }

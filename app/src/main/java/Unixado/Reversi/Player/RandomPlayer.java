@@ -5,8 +5,6 @@ import Unixado.Reversi.Game.DiskLocation;
 import Unixado.Reversi.Game.Game;
 import Unixado.Reversi.Game.Move;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -16,6 +14,12 @@ public class RandomPlayer extends AIPlayer{
         super ( color, game );
     }
 
+    /**
+     * the random player will simply choose a random spot from
+     * the available valid moves to play. This random player has been
+     * implemented to create the infrastructure for adding other
+     * computer players later and can be used for the EASY option in 1 V Computer games
+     */
     protected void takeAction(){
         boolean[][] validMoves = this.game.findAllValidMoves ( this );
         ArrayList<DiskLocation> validLocations = new ArrayList<> ();
@@ -32,8 +36,17 @@ public class RandomPlayer extends AIPlayer{
         this.game.addMove ( new Move ( this, randomLocation ) );
     }
 
+    /**
+     * Delay the computer move to let the player update his vision
+     * of the board in his mind
+     */
     public void takeActionWithDelay(){
-        new CountDownTimer (2000, 2000) {
+        // randomize the timer taken for the computer to seem more natural
+        // random time from 1 to 2 seconds so user thinks that the computer is thinking
+        // and doesn't suspect that we are using a timer like in here
+        int millisInFuture = new Random ().nextInt(2000 - 1000) + 1000;
+
+        new CountDownTimer (millisInFuture, millisInFuture) {
 
             public void onTick(long millisUntilFinished) {
             }

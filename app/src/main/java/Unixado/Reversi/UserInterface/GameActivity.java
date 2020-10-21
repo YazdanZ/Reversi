@@ -28,7 +28,7 @@ public class GameActivity extends AppCompatActivity {
     private Game game;
     private ImageView whiteScoreBand, blackScoreBand ;
     private TextView blackScoreText ,whiteScoreText;
-    Animation whiteOpeningAnimation, blackOpeningAnimation, whiteClosingAnimation, blackClosingAnimation,
+    private Animation whiteOpeningAnimation, blackOpeningAnimation, whiteClosingAnimation, blackClosingAnimation,
             whiteWinsAnimationIsTurn, whiteLosesAnimationIsTurn, blackWinsAnimationIsTurn, blackLosesAnimationIsTurn,
             whiteWinsAnimationIsNotTurn, whiteLosesAnimationIsNotTurn, blackWinsAnimationIsNotTurn,
             blackLosesAnimationIsNotTurn;
@@ -88,10 +88,19 @@ public class GameActivity extends AppCompatActivity {
         circularRevealAnimation.AnimateClosing ( 400, x, y );
     }
 
+    /**
+     *
+     * @param whitePlayerScore white player's score
+     * @param blackPlayerScore black player's score
+     * @param playerTurn player who has the turn to play
+     */
     public void updateScoreBoard( int whitePlayerScore, int blackPlayerScore, Color playerTurn ){
 
+        // Show the new score in the text views
         this.whiteScoreText.setText ( Integer.toString ( whitePlayerScore ) );
         this.blackScoreText.setText ( Integer.toString ( blackPlayerScore ) );
+
+        // Depending on the player who has the turn, the animations will be different
 
         if(playerTurn == Color.WHITE){
             this.whiteScoreText.startAnimation ( this.whiteOpeningAnimation );
@@ -107,10 +116,17 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * show the winner on the UI with a sweet animation
+     * @param winner winner player
+     */
     public void showGameResults(Player winner){
         if(winner.getColor () == Color.WHITE){
             //white wins
             this.whiteScoreText.setText ( "White Wins " );
+
+            // the animation to run will depend on which player has the turn when
+            // the game was finished.
 
             if(winner.isTurn ()){
                 this.whiteScoreText.startAnimation ( this.whiteWinsAnimationIsTurn );
@@ -144,6 +160,10 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * method to call when there is no winner
+     * so the game is a tie (draw)
+     */
     public void showGameResults(){
         // it's a tie
     }
@@ -201,6 +221,7 @@ public class GameActivity extends AppCompatActivity {
         this.blackScoreText = findViewById ( R.id.blackScore );
         this.whiteScoreText = findViewById ( R.id.whiteScore );
 
+        // find all animations
         this.whiteOpeningAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_expand_scoreboard_animation );
         this.blackOpeningAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_expand_scoreboard_animation );
         this.whiteClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_collapse_scoreboard_animation );
@@ -237,6 +258,9 @@ public class GameActivity extends AppCompatActivity {
             }
     }
 
+    /**
+     * Simply start a new game 
+     */
     private void createGame(){
         Log.i ("Game Activity", "Creating a new game ...");
         this.game = new Game ( this );
