@@ -29,7 +29,9 @@ public class GameActivity extends AppCompatActivity {
     private ImageView whiteScoreBand, blackScoreBand ;
     private TextView blackScoreText ,whiteScoreText;
     Animation whiteOpeningAnimation, blackOpeningAnimation, whiteClosingAnimation, blackClosingAnimation,
-    whiteWinsAnimation, whiteLosesAnimation, blackWinsAnimation, blackLosesAnimation;
+            whiteWinsAnimationIsTurn, whiteLosesAnimationIsTurn, blackWinsAnimationIsTurn, blackLosesAnimationIsTurn,
+            whiteWinsAnimationIsNotTurn, whiteLosesAnimationIsNotTurn, blackWinsAnimationIsNotTurn,
+            blackLosesAnimationIsNotTurn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,29 +71,11 @@ public class GameActivity extends AppCompatActivity {
         fetchScoreBoardResources ();
         createBoardListeners ();
 
-//
-//        new Thread(new Runnable() {
-//            public void run() {
-//                createGame();
-//            }
-//        }).start();
-
-        this.whiteScoreText.startAnimation ( this.whiteOpeningAnimation );
-        this.whiteScoreBand.startAnimation ( this.whiteOpeningAnimation );
-        this.blackScoreText.startAnimation ( this.blackClosingAnimation );
-        this.blackScoreBand.startAnimation ( this.blackClosingAnimation );
-        new CountDownTimer (5000, 2000) {
-
-            public void onTick(long millisUntilFinished) {
+        new Thread(new Runnable() {
+            public void run() {
+                createGame();
             }
-
-            public void onFinish() {
-                blackScoreText.startAnimation ( blackWinsAnimation );
-                blackScoreBand.startAnimation ( blackWinsAnimation );
-            }
-        }.start();
-
-
+        }).start();
     }
 
 
@@ -127,18 +111,36 @@ public class GameActivity extends AppCompatActivity {
         if(winner.getColor () == Color.WHITE){
             //white wins
             this.whiteScoreText.setText ( "White Wins " );
-            this.whiteScoreText.startAnimation ( this.whiteWinsAnimation );
-            this.whiteScoreBand.startAnimation ( this.whiteWinsAnimation );
-            this.blackScoreText.startAnimation ( this.blackLosesAnimation );
-            this.blackScoreBand.startAnimation ( this.blackLosesAnimation );
+
+            if(winner.isTurn ()){
+                this.whiteScoreText.startAnimation ( this.whiteWinsAnimationIsTurn );
+                this.whiteScoreBand.startAnimation ( this.whiteWinsAnimationIsTurn );
+                this.blackScoreText.startAnimation ( this.blackLosesAnimationIsNotTurn );
+                this.blackScoreBand.startAnimation ( this.blackLosesAnimationIsNotTurn );
+            }
+            else {
+                this.whiteScoreText.startAnimation ( this.whiteWinsAnimationIsNotTurn );
+                this.whiteScoreBand.startAnimation ( this.whiteWinsAnimationIsNotTurn );
+                this.blackScoreText.startAnimation ( this.blackLosesAnimationIsTurn );
+                this.blackScoreBand.startAnimation ( this.blackLosesAnimationIsTurn );
+            }
         }
         if(winner.getColor () == Color.BLACK){
             //black wins
             this.blackScoreText.setText ( "Black Wins" );
-            this.blackScoreText.startAnimation ( this.blackWinsAnimation );
-            this.blackScoreBand.startAnimation ( this.blackWinsAnimation );
-            this.whiteScoreText.startAnimation ( this.whiteLosesAnimation );
-            this.whiteScoreBand.startAnimation ( this.whiteLosesAnimation );
+            if(winner.isTurn ()){
+                this.blackScoreText.startAnimation ( this.blackWinsAnimationIsTurn );
+                this.blackScoreBand.startAnimation ( this.blackWinsAnimationIsTurn );
+                this.whiteScoreText.startAnimation ( this.whiteLosesAnimationIsNotTurn );
+                this.whiteScoreBand.startAnimation ( this.whiteLosesAnimationIsNotTurn );
+            }
+            else {
+                this.blackScoreText.startAnimation ( this.blackWinsAnimationIsNotTurn );
+                this.blackScoreBand.startAnimation ( this.blackWinsAnimationIsNotTurn );
+                this.whiteScoreText.startAnimation ( this.whiteLosesAnimationIsTurn );
+                this.whiteScoreBand.startAnimation ( this.whiteLosesAnimationIsTurn );
+            }
+
         }
     }
 
@@ -203,10 +205,14 @@ public class GameActivity extends AppCompatActivity {
         this.blackOpeningAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_expand_scoreboard_animation );
         this.whiteClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_collapse_scoreboard_animation );
         this.blackClosingAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_collapse_scoreboard_animation );
-        this.whiteWinsAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_wins_scoreboard_animation_isturn );
-        this.whiteLosesAnimation = AnimationUtils.loadAnimation ( this, R.anim.white_loses_scoreboard_animation_isturn );
-        this.blackWinsAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_wins_scoreboard_animation_isturn );
-        this.blackLosesAnimation = AnimationUtils.loadAnimation ( this, R.anim.black_loses_scoreboard_animation_isturn );
+        this.whiteWinsAnimationIsTurn = AnimationUtils.loadAnimation ( this, R.anim.white_wins_scoreboard_animation_isturn );
+        this.whiteLosesAnimationIsTurn = AnimationUtils.loadAnimation ( this, R.anim.white_loses_scoreboard_animation_isturn );
+        this.blackWinsAnimationIsTurn = AnimationUtils.loadAnimation ( this, R.anim.black_wins_scoreboard_animation_isturn );
+        this.blackLosesAnimationIsTurn = AnimationUtils.loadAnimation ( this, R.anim.black_loses_scoreboard_animation_isturn );
+        this.whiteWinsAnimationIsNotTurn = AnimationUtils.loadAnimation ( this, R.anim.white_wins_scoreboard_animation_isnot_turn );
+        this.whiteLosesAnimationIsNotTurn = AnimationUtils.loadAnimation ( this, R.anim.white_loses_scoreboard_animation_isnot_turn );
+        this.blackWinsAnimationIsNotTurn = AnimationUtils.loadAnimation ( this, R.anim.black_wins_scoreboard_animation_isnot_turn );
+        this.blackLosesAnimationIsNotTurn = AnimationUtils.loadAnimation ( this, R.anim.black_loses_scoreboard_animation_isnot_turn );
     }
 
     /**
