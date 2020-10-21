@@ -8,10 +8,11 @@ import Unixado.Reversi.R;
 import Unixado.circularactivityreveal.CircularRevealAnimation;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
+import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -46,7 +47,7 @@ public class GameActivity extends AppCompatActivity {
                         // 64.5 dps is the dps of the center of the play button from the bottom of the screen
                         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
-                        circularRevealAnimation.AnimateOpening ( 1000, x, y );
+                        circularRevealAnimation.AnimateOpening ( 0, x, y );
 
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -66,6 +67,32 @@ public class GameActivity extends AppCompatActivity {
                 createGame();
             }
         }).start();
+
+        ImageView imageView = findViewById ( R.id.imageView );
+        ImageView imageView1 = findViewById ( R.id.imageView3 );
+        TextView textView = findViewById ( R.id.textView );
+        TextView textView1 = findViewById ( R.id.textView3 );
+//
+//        TranslateAnimation animation = new TranslateAnimation(-200.0f, 0.0f, 0.0f, 0.0f);
+//        TranslateAnimation animation2 = new TranslateAnimation(200.0f, 300f, 0.0f, 0.0f);
+//
+//        animation.setDuration(1500);
+//        animation2.setDuration ( 1500 );
+//        imageView.startAnimation ( animation );
+//        imageView1.startAnimation ( animation2 );
+
+        Animation animation = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation1 );
+        Animation animation1 = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation2 );
+        Animation animation2 = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation3 );
+        Animation animation3 = AnimationUtils.loadAnimation ( this, R.anim.scoreboard_animation4 );
+
+        imageView.setAnimation ( animation );
+        //imageView1.setAnimation ( animation1 );
+
+        //imageView.setAnimation ( animation2 );
+        imageView1.setAnimation ( animation3 );
+        textView.setAnimation ( animation3 );
+        textView1.setAnimation ( animation );
 
     }
 
