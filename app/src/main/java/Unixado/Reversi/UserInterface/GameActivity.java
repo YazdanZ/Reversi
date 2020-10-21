@@ -111,7 +111,7 @@ public class GameActivity extends AppCompatActivity {
             this.blackScoreText.setAnimation ( this.blackClosingAnimation );
             this.blackScoreText.startAnimation ( this.blackClosingAnimation );
             this.blackScoreBand.setAnimation ( this.blackClosingAnimation );
-            this.whiteScoreBand.startAnimation ( this.blackClosingAnimation );
+            this.blackScoreBand.startAnimation ( this.blackClosingAnimation );
         }
         else {
             this.whiteScoreText.setAnimation ( this.whiteClosingAnimation );
