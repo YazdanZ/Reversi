@@ -4,6 +4,7 @@ import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.Game.DiskLocation;
 import Unixado.Reversi.Game.Game;
 import Unixado.Reversi.Game.Move;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class RandomPlayer extends AIPlayer{
         super ( color, game );
     }
 
-    public void takeAction(){
+    protected void takeAction(){
         boolean[][] validMoves = this.game.findAllValidMoves ( this );
         ArrayList<DiskLocation> validLocations = new ArrayList<> ();
         for(int row = 0; row < 8; row++)
@@ -29,5 +30,18 @@ public class RandomPlayer extends AIPlayer{
 
         DiskLocation randomLocation = validLocations.get ( new Random ().nextInt (validLocations.size ()));
         this.game.addMove ( new Move ( this, randomLocation ) );
+    }
+
+    public void takeActionWithDelay(){
+        new CountDownTimer (2000, 2000) {
+
+            public void onTick(long millisUntilFinished) {
+            }
+
+            public void onFinish() {
+                takeAction ();
+            }
+        }.start();
+
     }
 }

@@ -40,9 +40,9 @@ public class Game {
          field is set to true thought Player.toggleTurn()
 */
         if(player1.isTurn () && player1 instanceof AIPlayer)
-            ((AIPlayer) player1).takeAction ();
+            ((AIPlayer) player1).takeActionWithDelay ();
         if(player2.isTurn () && player2 instanceof AIPlayer)
-            ((AIPlayer) player2).takeAction ();
+            ((AIPlayer) player2).takeActionWithDelay ();
     }
 
     public void addMove(Move move){
