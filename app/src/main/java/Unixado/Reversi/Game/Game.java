@@ -28,7 +28,7 @@ public class Game {
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
         this.player1 = new RandomPlayer ( Color.WHITE , this);
-        this.player2 = new HumanPlayer ( Color.BLACK );
+        this.player2 = new RandomPlayer ( Color.BLACK , this);
 
         // show the scoreboard for the first time
         updateScoreBoard ();

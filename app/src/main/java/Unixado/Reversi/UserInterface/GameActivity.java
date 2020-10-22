@@ -71,11 +71,13 @@ public class GameActivity extends AppCompatActivity {
         fetchScoreBoardResources ();
         createBoardListeners ();
 
-        new Thread(new Runnable() {
+        runOnUiThread(new Runnable() {
+
+            @Override
             public void run() {
-                createGame();
+                createGame ();
             }
-        }).start();
+        });
     }
 
 
@@ -259,7 +261,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Simply start a new game 
+     * Simply start a new game
      */
     private void createGame(){
         Log.i ("Game Activity", "Creating a new game ...");

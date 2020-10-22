@@ -46,15 +46,16 @@ public class RandomPlayer extends AIPlayer{
         // and doesn't suspect that we are using a timer like in here
         int millisInFuture = new Random ().nextInt(2000 - 1000) + 1000;
 
-        new CountDownTimer (millisInFuture, millisInFuture) {
+        new CountDownTimer ( millisInFuture, millisInFuture ) {
 
-            public void onTick(long millisUntilFinished) {
+
+            public void onTick ( long millisUntilFinished ) {
             }
 
-            public void onFinish() {
+            public void onFinish () {
                 takeAction ();
             }
-        }.start();
+        }.start ();
 
     }
 }
