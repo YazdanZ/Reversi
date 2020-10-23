@@ -19,11 +19,11 @@ public final class Move {
     }
 
     public DiskLocation getLocation () {
-        return location;
+        return this.location;
     }
 
     public Player getPlayer () {
-        return player;
+        return this.player;
     }
 
 }
