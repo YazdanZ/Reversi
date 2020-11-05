@@ -8,19 +8,20 @@ public abstract class Player {
     private int score;
     private boolean turn;
 
-    public Player (Color color){
+    public Player ( Color color ) {
 
         // game starts with 2 scores for each player
         this.score = 2;
         this.color = color;
 
         //  Black player starts first according to othello rules
-        if(this.color == Color.BLACK)
+        if (this.color == Color.BLACK)
             this.turn = true;
     }
 
     /**
      * get the number of disks the player has on the board
+     *
      * @return score
      */
     public final int getScore () {
@@ -29,6 +30,7 @@ public abstract class Player {
 
     /**
      * set player's score
+     *
      * @param score number of player disks on the board
      */
     public final void setScore ( int score ) {
@@ -39,23 +41,21 @@ public abstract class Player {
      * Toggle the turn. If it was the player's turn, after call to this
      * method. It won't be the player's turn anymore and vice versa.
      */
-    public void toggleTurn (){
+    public void toggleTurn () {
         this.turn = !this.turn;
     }
 
     /**
-     *
      * @return if it's the player's turn to play
      */
-    public final boolean isTurn(){
+    public final boolean isTurn () {
         return this.turn;
     }
 
     /**
-     *
      * @return player's color (either white or black)
      */
-    public final Color getColor(){
+    public final Color getColor () {
         return this.color;
     }
 }

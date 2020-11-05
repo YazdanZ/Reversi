@@ -10,10 +10,11 @@ public final class Move {
     /**
      * A move consists of a player who moves and
      * a location where the player puts a disk
-     * @param player the player who does the move
+     *
+     * @param player   the player who does the move
      * @param location the location where the player disk is placed
      */
-    public Move ( Player player, DiskLocation location ){
+    public Move ( Player player, DiskLocation location ) {
         this.player = player;
         this.location = location;
     }

@@ -1,7 +1,6 @@
 package Unixado.Reversi.Game;
 
-import Unixado.Reversi.Player.AIPlayer;
-import Unixado.Reversi.Player.HumanPlayer;
+import Unixado.Reversi.Player.ComputerPlayer;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
@@ -13,7 +12,7 @@ public class Game {
     private final Board board;
     private final GameActivity gameActivity;
 
-    public Game( GameActivity gameActivity ){
+    public Game ( GameActivity gameActivity ) {
 
         this.gameActivity = gameActivity;
 
@@ -27,8 +26,8 @@ public class Game {
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new RandomPlayer ( Color.WHITE , this);
-        this.player2 = new RandomPlayer ( Color.BLACK , this);
+        this.player1 = new RandomPlayer ( Color.WHITE, this );
+        this.player2 = new RandomPlayer ( Color.BLACK, this );
 
         // show the scoreboard for the first time
         updateScoreBoard ();
@@ -39,20 +38,20 @@ public class Game {
          this has to be done only once as the AI player will automatically move when the isTurn
          field is set to true through Player.toggleTurn()
 */
-        if(player1.isTurn () && player1 instanceof AIPlayer)
-            ((AIPlayer) player1).takeActionWithDelay ();
-        if(player2.isTurn () && player2 instanceof AIPlayer)
-            ((AIPlayer) player2).takeActionWithDelay ();
+        if (player1.isTurn () && player1 instanceof ComputerPlayer)
+            ((ComputerPlayer) player1).takeActionWithDelay ();
+        if (player2.isTurn () && player2 instanceof ComputerPlayer)
+            ((ComputerPlayer) player2).takeActionWithDelay ();
     }
 
-    public void addMove(Move move){
+    public void addMove ( Move move ) {
 
         // Verify the move
-        if(move.getPlayer () != getCurrentPlayer ())
+        if (move.getPlayer () != getCurrentPlayer ())
             return;
 
         boolean[][] validMoves = findAllValidMoves ( move.getPlayer () );
-        if(validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]){
+        if (validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]) {
 
             // add newly added disk to the board
             this.board.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
@@ -69,24 +68,23 @@ public class Game {
 
         // toggle turn if the current player has no valid moves
         // show that the player has no valid moves on the UI
-        if(this.board.playerHasNoValidMoves ( getCurrentPlayer () )){
+        if (this.board.playerHasNoValidMoves ( getCurrentPlayer () )) {
             toggleTurn ();
             updateScores ();
         }
 
         // Show that the second player has no valid moves on the UI
         // if none of the players have a valid move then the game is over
-        if(this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
+        if (this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
             gameOver ();
 
     }
 
     /**
-     *
      * @return the player who has the turn
      */
-    public Player getCurrentPlayer(){
-        if(this.player1.isTurn ())
+    public Player getCurrentPlayer () {
+        if (this.player1.isTurn ())
             return player1;
         return player2;
     }
@@ -95,7 +93,7 @@ public class Game {
      * switch turns
      * if it was player1's turn, it will be player2's turn and vice versa
      */
-    private void toggleTurn (){
+    private void toggleTurn () {
         player1.toggleTurn ();
         player2.toggleTurn ();
     }
@@ -103,13 +101,12 @@ public class Game {
     /**
      * Defined what happens when the game is over
      * show the winner on the screen by updating the UI
-     *
      */
-    private void gameOver(){
-        if(this.player1.getScore () > this.player2.getScore ())
-            this.gameActivity.showGameResults (player1);
-        if(this.player2.getScore () > this.player1.getScore ())
-            this.gameActivity.showGameResults (player2);
+    private void gameOver () {
+        if (this.player1.getScore () > this.player2.getScore ())
+            this.gameActivity.showGameResults ( player1 );
+        if (this.player2.getScore () > this.player1.getScore ())
+            this.gameActivity.showGameResults ( player2 );
         else
             this.gameActivity.showGameResults ();
     }
@@ -117,7 +114,7 @@ public class Game {
     /**
      * Update player scores (number of disks on the board)
      */
-    private void updateScores(){
+    private void updateScores () {
         // reset both player scores
         player1.setScore ( 0 );
         player2.setScore ( 0 );
@@ -125,10 +122,10 @@ public class Game {
         Color[][] board = this.board.getBoard ();
         // loop through the board and add a score each time a player's disk is found
         for (int row = 0; row < 8; row++)
-            for (int col = 0 ; col < 8; col++){
-                if(board[row][col] == player1.getColor ())
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player1.getColor ())
                     player1.setScore ( player1.getScore () + 1 );
-                if(board[row][col] == player2.getColor ())
+                if (board[row][col] == player2.getColor ())
                     player2.setScore ( player2.getScore () + 1 );
             }
         // update the IU from here
@@ -137,29 +134,29 @@ public class Game {
 
     /**
      * Call the updateScoreBoard to update the ScoreBoardUI
-      */
-    private void updateScoreBoard(){
+     */
+    private void updateScoreBoard () {
         int blackPlayerScore, whitePlayerScore;
-        if(player1.getColor () == Color.BLACK){
+        if (player1.getColor () == Color.BLACK) {
             blackPlayerScore = player1.getScore ();
             whitePlayerScore = player2.getScore ();
-        }
-        else {
+        } else {
             whitePlayerScore = player1.getScore ();
             blackPlayerScore = player2.getScore ();
         }
 
-        this.gameActivity.updateScoreBoard (whitePlayerScore, blackPlayerScore, getCurrentPlayer ().getColor () );
+        this.gameActivity.updateScoreBoard ( whitePlayerScore, blackPlayerScore, getCurrentPlayer ().getColor () );
     }
 
     /**
      * Wrapper to find moves from the UI.
      * I didn't want to give Player access to the Board so
      * I created this wrapper method.
+     *
      * @param player player to find valid moves
      * @return a boolean 2D array containing valid move tiles as true
      */
-    public boolean[][] findAllValidMoves(Player player){
+    public boolean[][] findAllValidMoves ( Player player ) {
         return this.board.findAllValidMoves ( player );
     }
 }
