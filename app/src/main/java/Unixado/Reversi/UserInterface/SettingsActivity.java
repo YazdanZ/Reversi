@@ -46,7 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
                         int x = circularRevealAnimation.getDips ( (float) 25.5 );
                         int y = circularRevealAnimation.getDips ( (float) 25.5 );
 
-                        circularRevealAnimation.AnimateOpening ( 500, x, y);
+                        circularRevealAnimation.animateOpening ( 500, x, y);
 
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -65,6 +65,6 @@ public class SettingsActivity extends AppCompatActivity {
         int x = circularRevealAnimation.getDips ( (float) 25.5 );
         int y = circularRevealAnimation.getDips ( (float) 25.5 );
 
-        circularRevealAnimation.AnimateClosing ( 500, x, y );
+        circularRevealAnimation.animateClosing ( 500, x, y );
     }
 }

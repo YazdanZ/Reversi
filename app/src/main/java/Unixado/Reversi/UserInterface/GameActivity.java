@@ -55,7 +55,7 @@ public class GameActivity extends AppCompatActivity {
                         // 64.5 dps is the dps of the center of the play button from the bottom of the screen
                         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
-                        circularRevealAnimation.AnimateOpening ( 1000, x, y );
+                        circularRevealAnimation.animateOpening ( 1000, x, y );
 
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                             rootLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -87,7 +87,7 @@ public class GameActivity extends AppCompatActivity {
         // 64.5 dps is the dps of the center of the play button from the bottom of the screen
         int y = rootLayout.getHeight() - circularRevealAnimation.getDips( (float) 64.5 );
 
-        circularRevealAnimation.AnimateClosing ( 400, x, y );
+        circularRevealAnimation.animateClosing ( 400, x, y );
     }
 
     /**
