@@ -1,6 +1,7 @@
 package Unixado.Reversi.Game;
 
 import Unixado.Reversi.Player.ComputerPlayer;
+import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
@@ -27,7 +28,7 @@ public class Game {
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
         this.player1 = new RandomPlayer ( Color.WHITE, this );
-        this.player2 = new RandomPlayer ( Color.BLACK, this );
+        this.player2 = new HumanPlayer ( Color.BLACK );
 
         // show the scoreboard for the first time
         updateScoreBoard ();

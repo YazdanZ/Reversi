@@ -2,6 +2,7 @@ package Unixado.Reversi.Game;
 
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.UserInterface.GameActivity;
+import android.util.Log;
 
 public class Board {
 
@@ -18,6 +19,61 @@ public class Board {
         initializeBoard ();
     }
 
+    private Board ( Color[][] board ) {
+        this.board = board;
+        this.gameActivity = null;
+    }
+
+    public static Color[][] getBoardAfterMove ( Move move, Color[][] board ) {
+
+        Board clonedBoard = new Board ( board );
+        boolean[][] validMoves = clonedBoard.findAllValidMoves ( move.getPlayer () );
+
+        if (validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]) {
+
+            // add newly added disk to the board
+            clonedBoard.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
+
+            // flip opponent disks that have been captured by this move
+            clonedBoard.flipOpponentDisks ( move );
+        }
+
+        return clonedBoard.board;
+    }
+
+    /**
+     * Print the board to the Logcat as an info msg
+     * @param board board array to print
+     */
+    public static void printBoard ( Color[][] board ) {
+
+        StringBuilder output = new StringBuilder ();
+
+        for (int row = 7; row >= 0; row--)
+            for (int col = 0; col < 8; col++) {
+                switch (board[row][col]) {
+                    case WHITE:
+                        output.append ( "w" );
+                        break;
+                    case BLACK:
+                        output.append ( "b" );
+                        break;
+                    case BLANK:
+                        output.append ( "-" );
+                        break;
+
+                }
+                if(col == 7)
+                    output.append ( "\n" );
+            }
+
+        Log.i ("Board Printer", output.toString ());
+    }
+
+    public void printBoard () {
+        printBoard ( this.board );
+    }
+
     /**
      * Update board and update the displayed disk color displayed on the board
      *
@@ -26,7 +82,8 @@ public class Board {
      */
     public void setBoardDisk ( DiskLocation location, Color color ) {
         this.board[location.getRow ()][location.getColumn ()] = color;
-        this.gameActivity.setBoardResources ( location, color );
+        if(this.gameActivity != null)
+            this.gameActivity.setBoardResources ( location, color );
     }
 
     /**
