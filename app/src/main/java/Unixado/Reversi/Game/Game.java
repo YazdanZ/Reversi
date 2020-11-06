@@ -1,10 +1,9 @@
 package Unixado.Reversi.Game;
 
-import Unixado.Reversi.Player.ComputerPlayer;
-import Unixado.Reversi.Player.GreedyPlayer;
-import Unixado.Reversi.Player.HumanPlayer;
-import Unixado.Reversi.Player.Player;
+import Unixado.Reversi.Player.*;
 import Unixado.Reversi.UserInterface.GameActivity;
+
+import java.util.ArrayList;
 
 public class Game {
 
@@ -27,7 +26,7 @@ public class Game {
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new GreedyPlayer ( Color.BLACK, this );
+        this.player1 = new RandomPlayer ( Color.BLACK, this );
         this.player2 = new HumanPlayer ( Color.WHITE );
 
         // show the scoreboard for the first time
@@ -50,8 +49,7 @@ public class Game {
         if (move.getPlayer () != getCurrentPlayer ())
             return;
 
-        boolean[][] validMoves = findAllValidMoves ( move.getPlayer () );
-        if (validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]) {
+        if (findAllValidMoves ( move.getPlayer () ).contains ( move )) {
 
             this.board.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
             this.board.flipOpponentDisks ( move );
@@ -139,9 +137,9 @@ public class Game {
      * I created this wrapper method.
      *
      * @param player player to find valid moves
-     * @return a boolean 2D array containing valid move tiles as true
+     * @return valid moves of the player
      */
-    public boolean[][] findAllValidMoves ( Player player ) {
+    public ArrayList<Move> findAllValidMoves ( Player player ) {
         return this.board.findAllValidMoves ( player );
     }
 

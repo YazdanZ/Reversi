@@ -1,6 +1,8 @@
 package Unixado.Reversi.Player;
 
-import Unixado.Reversi.Game.*;
+import Unixado.Reversi.Game.Color;
+import Unixado.Reversi.Game.Game;
+import Unixado.Reversi.Game.Move;
 import android.os.CountDownTimer;
 
 import java.util.ArrayList;
@@ -19,19 +21,13 @@ public class RandomPlayer extends ComputerPlayer {
      * computer players later and can be used for the EASY option in 1 V Computer games
      */
     protected void takeAction () {
-        boolean[][] validMoves = this.game.findAllValidMoves ( this );
-        ArrayList<DiskLocation> validLocations = new ArrayList<> ();
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++) {
-                if (validMoves[row][col])
-                    validLocations.add ( new DiskLocation ( row, col ) );
-            }
+        ArrayList<Move> validMoves = this.game.findAllValidMoves ( this );
 
-        if (validLocations.size () == 0)
+        if (validMoves.size () == 0)
             return;
 
-        DiskLocation randomLocation = validLocations.get ( new Random ().nextInt ( validLocations.size () ) );
-        this.game.addMove ( new Move ( this, randomLocation ) );
+        Move randomMove = validMoves.get ( new Random ().nextInt ( validMoves.size () ) );
+        this.game.addMove ( randomMove );
     }
 
     /**

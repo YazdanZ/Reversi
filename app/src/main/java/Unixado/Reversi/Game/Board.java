@@ -4,6 +4,8 @@ import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.UserInterface.GameActivity;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 public class Board {
 
     private final GameActivity gameActivity;
@@ -27,9 +29,8 @@ public class Board {
     public static Color[][] getBoardAfterMove ( Move move, Color[][] board ) {
 
         Board clonedBoard = new Board ( board );
-        boolean[][] validMoves = clonedBoard.findAllValidMoves ( move.getPlayer () );
 
-        if (validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]) {
+        if (clonedBoard.findAllValidMoves ( move.getPlayer () ).contains ( move )) {
 
             // add newly added disk to the board
             clonedBoard.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
@@ -108,12 +109,10 @@ public class Board {
      * Find all the valid moves for a player
      *
      * @param player for whom to find all valid moves
-     * @return a 2D boolean array of valid moves on the board.
-     * Cells with a true value represent spots on the board
-     * where the player's move will be valid.
+     * @return all player's valid moves
      */
-    public boolean[][] findAllValidMoves ( Player player ) {
-        boolean[][] validMoves = new boolean[8][8];
+    public ArrayList<Move> findAllValidMoves ( Player player ) {
+        ArrayList<Move> validMoves = new ArrayList<> ();
 
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++) {
@@ -132,7 +131,7 @@ public class Board {
 
                     // if the move is valid in any direction, the move is valid
                     if (n || nw || ne || s || sw || se || e || w)
-                        validMoves[row][col] = true;
+                        validMoves.add ( move );
                 }
             }
         return validMoves;
@@ -161,16 +160,10 @@ public class Board {
      * find if a player has any valid moves
      *
      * @param player player
-     * @return if the player has at least one valid move
+     * @return false if the player has at least one valid move
      */
     public boolean playerHasNoValidMoves ( Player player ) {
-        boolean[][] validMoves = findAllValidMoves ( player );
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++) {
-                if (validMoves[row][col])
-                    return false;
-            }
-        return true;
+        return findAllValidMoves ( player ).size () == 0;
     }
 
     /**

@@ -1,6 +1,9 @@
 package Unixado.Reversi.Player;
 
-import Unixado.Reversi.Game.*;
+import Unixado.Reversi.Game.Board;
+import Unixado.Reversi.Game.Color;
+import Unixado.Reversi.Game.Game;
+import Unixado.Reversi.Game.Move;
 import android.os.CountDownTimer;
 
 import java.util.ArrayList;
@@ -14,32 +17,24 @@ public class GreedyPlayer extends ComputerPlayer {
 
     @Override
     protected void takeAction () {
-        boolean[][] validMoves = this.game.findAllValidMoves ( this );
-
-        Color[][] board = this.game.getBoard ();
-        ArrayList<Move> moveArray = new ArrayList<> ();
-
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++) {
-                if (validMoves[row][col])
-                    moveArray.add ( new Move ( this, new DiskLocation ( row, col ) ) );
-            }
+        ArrayList<Move> validMoves = this.game.findAllValidMoves ( this );
 
         Move greedyMove = null;
-        int maxGreediness = 0;
-        for ( Move move : moveArray ) {
+        int greediness = 0;
+        for (Move move : validMoves) {
 
-            int greediness = Board.getNumberOfPlayerDisks
+            int moveGreediness = Board.getNumberOfPlayerDisks
                     ( this, Board.getBoardAfterMove ( move, this.game.getBoard () ) );
 
-            if ( greediness > maxGreediness) {
-                maxGreediness = greediness;
+            if (moveGreediness > greediness) {
+                greediness = moveGreediness;
                 greedyMove = move;
             }
         }
 
-        if( greedyMove != null )
+        if (greedyMove != null) {
             this.game.addMove ( greedyMove );
+        }
     }
 
     @Override

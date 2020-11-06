@@ -1,5 +1,7 @@
 package Unixado.Reversi.Game;
 
+import java.util.Objects;
+
 public final class DiskLocation {
 
     private static final String EXCEPTION_MSG = "Locations on the board range from [0][0] to [7][7]";
@@ -26,4 +28,17 @@ public final class DiskLocation {
         return this.column;
     }
 
+    @Override
+    public boolean equals ( Object o ) {
+        if (this == o) return true;
+        if (!(o instanceof DiskLocation)) return false;
+        DiskLocation that = (DiskLocation) o;
+        return getRow () == that.getRow () &&
+                getColumn () == that.getColumn ();
+    }
+
+    @Override
+    public int hashCode () {
+        return Objects.hash ( getRow (), getColumn () );
+    }
 }
