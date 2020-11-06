@@ -43,6 +43,7 @@ public class Board {
 
     /**
      * Print the board to the Logcat as an info msg
+     *
      * @param board board array to print
      */
     public static void printBoard ( Color[][] board ) {
@@ -51,6 +52,8 @@ public class Board {
 
         for (int row = 7; row >= 0; row--)
             for (int col = 0; col < 8; col++) {
+                if (row == 7 && col == 0)
+                    output.append ( " \n" );
                 switch (board[row][col]) {
                     case WHITE:
                         output.append ( "w" );
@@ -63,15 +66,30 @@ public class Board {
                         break;
 
                 }
-                if(col == 7)
+                if (col == 7)
                     output.append ( "\n" );
             }
 
-        Log.i ("Board Printer", output.toString ());
+        Log.i ( "Board Printer", output.toString () );
+    }
+
+    public static int getNumberOfPlayerDisks ( Player player, Color[][] board ) {
+        int count = 0;
+
+        for (int row = 0; row < 8; row++)
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player.getColor ())
+                    count++;
+            }
+        return count;
     }
 
     public void printBoard () {
         printBoard ( this.board );
+    }
+
+    public int getNumberOfPlayerDisks ( Player player ) {
+        return getNumberOfPlayerDisks ( player, this.board );
     }
 
     /**
@@ -82,7 +100,7 @@ public class Board {
      */
     public void setBoardDisk ( DiskLocation location, Color color ) {
         this.board[location.getRow ()][location.getColumn ()] = color;
-        if(this.gameActivity != null)
+        if (this.gameActivity != null)
             this.gameActivity.setBoardResources ( location, color );
     }
 
@@ -159,7 +177,13 @@ public class Board {
      * @return game board array
      */
     public Color[][] getBoard () {
-        return this.board.clone ();
+        Color[][] clonedBoard = new Color[this.board.length][];
+
+        // perform a copy
+        for (int i = 0; i < this.board.length; i++)
+            clonedBoard[i] = this.board[i].clone ();
+
+        return clonedBoard;
     }
 
     /**

@@ -1,9 +1,6 @@
 package Unixado.Reversi.Player;
 
-import Unixado.Reversi.Game.Color;
-import Unixado.Reversi.Game.DiskLocation;
-import Unixado.Reversi.Game.Game;
-import Unixado.Reversi.Game.Move;
+import Unixado.Reversi.Game.*;
 import android.os.CountDownTimer;
 
 import java.util.ArrayList;

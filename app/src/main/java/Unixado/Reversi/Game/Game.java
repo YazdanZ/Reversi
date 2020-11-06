@@ -1,9 +1,9 @@
 package Unixado.Reversi.Game;
 
 import Unixado.Reversi.Player.ComputerPlayer;
+import Unixado.Reversi.Player.GreedyPlayer;
 import Unixado.Reversi.Player.HumanPlayer;
 import Unixado.Reversi.Player.Player;
-import Unixado.Reversi.Player.RandomPlayer;
 import Unixado.Reversi.UserInterface.GameActivity;
 
 public class Game {
@@ -27,8 +27,8 @@ public class Game {
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new RandomPlayer ( Color.WHITE, this );
-        this.player2 = new HumanPlayer ( Color.BLACK );
+        this.player1 = new GreedyPlayer ( Color.BLACK, this );
+        this.player2 = new HumanPlayer ( Color.WHITE );
 
         // show the scoreboard for the first time
         updateScoreBoard ();
@@ -47,23 +47,16 @@ public class Game {
 
     public void addMove ( Move move ) {
 
-        // Verify the move
         if (move.getPlayer () != getCurrentPlayer ())
             return;
 
         boolean[][] validMoves = findAllValidMoves ( move.getPlayer () );
         if (validMoves[move.getLocation ().getRow ()][move.getLocation ().getColumn ()]) {
 
-            // add newly added disk to the board
             this.board.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
-
-            // flip opponent disks that have been captured by this move
             this.board.flipOpponentDisks ( move );
-
-            // change turns
+            this.board.printBoard ();
             toggleTurn ();
-
-            // Update player scores
             updateScores ();
         }
 
@@ -116,19 +109,9 @@ public class Game {
      * Update player scores (number of disks on the board)
      */
     private void updateScores () {
-        // reset both player scores
-        player1.setScore ( 0 );
-        player2.setScore ( 0 );
+        player1.setScore ( this.board.getNumberOfPlayerDisks ( player1 ) );
+        player2.setScore ( this.board.getNumberOfPlayerDisks ( player2 ) );
 
-        Color[][] board = this.board.getBoard ();
-        // loop through the board and add a score each time a player's disk is found
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++) {
-                if (board[row][col] == player1.getColor ())
-                    player1.setScore ( player1.getScore () + 1 );
-                if (board[row][col] == player2.getColor ())
-                    player2.setScore ( player2.getScore () + 1 );
-            }
         // update the IU from here
         updateScoreBoard ();
     }
@@ -138,6 +121,7 @@ public class Game {
      */
     private void updateScoreBoard () {
         int blackPlayerScore, whitePlayerScore;
+
         if (player1.getColor () == Color.BLACK) {
             blackPlayerScore = player1.getScore ();
             whitePlayerScore = player2.getScore ();
@@ -159,5 +143,9 @@ public class Game {
      */
     public boolean[][] findAllValidMoves ( Player player ) {
         return this.board.findAllValidMoves ( player );
+    }
+
+    public Color[][] getBoard () {
+        return this.board.getBoard ();
     }
 }
