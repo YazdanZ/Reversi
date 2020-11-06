@@ -2,6 +2,9 @@ package Unixado.Reversi.Game;
 
 import Unixado.Reversi.Player.Player;
 import Unixado.Reversi.UserInterface.GameActivity;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 public class Board {
 
@@ -18,6 +21,78 @@ public class Board {
         initializeBoard ();
     }
 
+    private Board ( Color[][] board ) {
+        this.board = board;
+        this.gameActivity = null;
+    }
+
+    public static Color[][] getBoardAfterMove ( Move move, Color[][] board ) {
+
+        Board clonedBoard = new Board ( board );
+
+        if (clonedBoard.findAllValidMoves ( move.getPlayer () ).contains ( move )) {
+
+            // add newly added disk to the board
+            clonedBoard.setBoardDisk ( move.getLocation (), move.getPlayer ().getColor () );
+
+            // flip opponent disks that have been captured by this move
+            clonedBoard.flipOpponentDisks ( move );
+        }
+
+        return clonedBoard.board;
+    }
+
+    /**
+     * Print the board to the Logcat as an info msg
+     *
+     * @param board board array to print
+     */
+    public static void printBoard ( Color[][] board ) {
+
+        StringBuilder output = new StringBuilder ();
+
+        for (int row = 7; row >= 0; row--)
+            for (int col = 0; col < 8; col++) {
+                if (row == 7 && col == 0)
+                    output.append ( " \n" );
+                switch (board[row][col]) {
+                    case WHITE:
+                        output.append ( "w" );
+                        break;
+                    case BLACK:
+                        output.append ( "b" );
+                        break;
+                    case BLANK:
+                        output.append ( "-" );
+                        break;
+
+                }
+                if (col == 7)
+                    output.append ( "\n" );
+            }
+
+        Log.i ( "Board Printer", output.toString () );
+    }
+
+    public static int getNumberOfPlayerDisks ( Player player, Color[][] board ) {
+        int count = 0;
+
+        for (int row = 0; row < 8; row++)
+            for (int col = 0; col < 8; col++) {
+                if (board[row][col] == player.getColor ())
+                    count++;
+            }
+        return count;
+    }
+
+    public void printBoard () {
+        printBoard ( this.board );
+    }
+
+    public int getNumberOfPlayerDisks ( Player player ) {
+        return getNumberOfPlayerDisks ( player, this.board );
+    }
+
     /**
      * Update board and update the displayed disk color displayed on the board
      *
@@ -26,19 +101,18 @@ public class Board {
      */
     public void setBoardDisk ( DiskLocation location, Color color ) {
         this.board[location.getRow ()][location.getColumn ()] = color;
-        this.gameActivity.setBoardResources ( location, color );
+        if (this.gameActivity != null)
+            this.gameActivity.setBoardResources ( location, color );
     }
 
     /**
      * Find all the valid moves for a player
      *
      * @param player for whom to find all valid moves
-     * @return a 2D boolean array of valid moves on the board.
-     * Cells with a true value represent spots on the board
-     * where the player's move will be valid.
+     * @return all player's valid moves
      */
-    public boolean[][] findAllValidMoves ( Player player ) {
-        boolean[][] validMoves = new boolean[8][8];
+    public ArrayList<Move> findAllValidMoves ( Player player ) {
+        ArrayList<Move> validMoves = new ArrayList<> ();
 
         for (int row = 0; row < 8; row++)
             for (int col = 0; col < 8; col++) {
@@ -57,7 +131,7 @@ public class Board {
 
                     // if the move is valid in any direction, the move is valid
                     if (n || nw || ne || s || sw || se || e || w)
-                        validMoves[row][col] = true;
+                        validMoves.add ( move );
                 }
             }
         return validMoves;
@@ -86,23 +160,23 @@ public class Board {
      * find if a player has any valid moves
      *
      * @param player player
-     * @return if the player has at least one valid move
+     * @return false if the player has at least one valid move
      */
     public boolean playerHasNoValidMoves ( Player player ) {
-        boolean[][] validMoves = findAllValidMoves ( player );
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++) {
-                if (validMoves[row][col])
-                    return false;
-            }
-        return true;
+        return findAllValidMoves ( player ).size () == 0;
     }
 
     /**
      * @return game board array
      */
     public Color[][] getBoard () {
-        return this.board.clone ();
+        Color[][] clonedBoard = new Color[this.board.length][];
+
+        // perform a copy
+        for (int i = 0; i < this.board.length; i++)
+            clonedBoard[i] = this.board[i].clone ();
+
+        return clonedBoard;
     }
 
     /**

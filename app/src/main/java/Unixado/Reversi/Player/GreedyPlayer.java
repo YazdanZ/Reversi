@@ -1,8 +1,9 @@
 package Unixado.Reversi.Player;
 
+import Unixado.Reversi.Game.Board;
 import Unixado.Reversi.Game.Color;
-import Unixado.Reversi.Game.DiskLocation;
 import Unixado.Reversi.Game.Game;
+import Unixado.Reversi.Game.Move;
 import android.os.CountDownTimer;
 
 import java.util.ArrayList;
@@ -16,21 +17,24 @@ public class GreedyPlayer extends ComputerPlayer {
 
     @Override
     protected void takeAction () {
-        boolean[][] validMoves = this.game.findAllValidMoves ( this );
+        ArrayList<Move> validMoves = this.game.findAllValidMoves ( this );
 
-        ArrayList<DiskLocation> validLocations = new ArrayList<> ();
-        for (int row = 0; row < 8; row++)
-            for (int col = 0; col < 8; col++) {
-                if (validMoves[row][col])
-                    validLocations.add ( new DiskLocation ( row, col ) );
+        Move greedyMove = null;
+        int greediness = 0;
+        for (Move move : validMoves) {
+
+            int moveGreediness = Board.getNumberOfPlayerDisks
+                    ( this, Board.getBoardAfterMove ( move, this.game.getBoard () ) );
+
+            if (moveGreediness > greediness) {
+                greediness = moveGreediness;
+                greedyMove = move;
             }
+        }
 
-        if (validLocations.size () == 0)
-            return;
-
-        // Evaluate the moves to find the one that results in the maximum number of opponent disks to be flipped
-
-
+        if (greedyMove != null) {
+            this.game.addMove ( greedyMove );
+        }
     }
 
     @Override

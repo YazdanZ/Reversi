@@ -2,6 +2,8 @@ package Unixado.Reversi.Game;
 
 import Unixado.Reversi.Player.Player;
 
+import java.util.Objects;
+
 public final class Move {
 
     private final Player player;
@@ -27,4 +29,17 @@ public final class Move {
         return this.player;
     }
 
+    @Override
+    public boolean equals ( Object o ) {
+        if (this == o) return true;
+        if (!(o instanceof Move)) return false;
+        Move move = (Move) o;
+        return getPlayer ().equals ( move.getPlayer () ) &&
+                getLocation ().equals ( move.getLocation () );
+    }
+
+    @Override
+    public int hashCode () {
+        return Objects.hash ( getPlayer (), getLocation () );
+    }
 }
