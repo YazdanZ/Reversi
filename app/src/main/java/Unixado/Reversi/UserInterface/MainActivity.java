@@ -53,19 +53,19 @@ public class MainActivity extends AppCompatActivity {
         } );
     }
 
-    private void openGameActivity(){
-        Intent intent = new Intent (MainActivity.this, GameActivity.class);
+    private void openGameActivity () {
+        Intent intent = new Intent ( MainActivity.this, GameActivity.class );
         startActivity ( intent );
 
         // Override the default animation to only show the custom anim
-        overridePendingTransition(0, 0);
+        overridePendingTransition ( 0, 0 );
     }
 
-    private void openSettingsActivity(){
-        Intent intent = new Intent (MainActivity.this, SettingsActivity.class);
+    private void openSettingsActivity () {
+        Intent intent = new Intent ( MainActivity.this, SettingsActivity.class );
         startActivity ( intent );
 
         // Override the default animation to only show the custom anim
-        overridePendingTransition(0, 0);
+        overridePendingTransition ( 0, 0 );
     }
 }
