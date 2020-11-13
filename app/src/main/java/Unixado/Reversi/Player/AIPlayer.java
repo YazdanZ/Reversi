@@ -10,4 +10,8 @@ public abstract class AIPlayer extends ComputerPlayer {
     }
 
     public abstract Move evaluate ();
+
+    public Game getGame () {
+        return this.game;
+    }
 }

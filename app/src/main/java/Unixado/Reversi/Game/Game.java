@@ -14,6 +14,7 @@ public class Game {
     private final Player player2;
     private final Board board;
     private final GameActivity gameActivity;
+    private boolean gameOver;
 
     public Game ( GameActivity gameActivity ) {
 
@@ -98,6 +99,7 @@ public class Game {
      * show the winner on the screen by updating the UI
      */
     private void gameOver () {
+        this.gameOver = true;
         if (this.player1.getScore () > this.player2.getScore ())
             this.gameActivity.showGameResults ( player1 );
         if (this.player2.getScore () > this.player1.getScore ())
@@ -148,5 +150,9 @@ public class Game {
 
     public Color[][] getBoard () {
         return this.board.getBoard ();
+    }
+
+    public boolean isGameOver () {
+        return this.gameOver;
     }
 }
