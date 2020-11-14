@@ -21,7 +21,7 @@ public class Board {
         initializeBoard ();
     }
 
-    private Board ( Color[][] board ) {
+    public Board ( Color[][] board ) {
         this.board = board;
         this.gameActivity = null;
     }
@@ -227,7 +227,7 @@ public class Board {
      * @param col column on the board
      * @return if the position specifies by row and col are on the board
      */
-    private boolean isPositionNotOnBoard ( int row, int col ) {
+    private static boolean isPositionNotOnBoard ( int row, int col ) {
         if (row < 0 || row > 7)
             return true;
         return col < 0 || col > 7;

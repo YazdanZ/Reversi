@@ -14,7 +14,6 @@ public class Game {
     private final Player player2;
     private final Board board;
     private final GameActivity gameActivity;
-    private boolean gameOver;
 
     public Game ( GameActivity gameActivity ) {
 
@@ -48,6 +47,12 @@ public class Game {
             ((ComputerPlayer) player2).takeActionWithDelay ();
     }
 
+    public static boolean isGameOver ( Board board, Player player1, Player player2 ) {
+        if (board.findAllValidMoves ( player1 ).size () == 0 && board.findAllValidMoves ( player2 ).size () == 0)
+            return true;
+        return false;
+    }
+
     public void addMove ( Move move ) {
 
         if (move.getPlayer () != getCurrentPlayer ())
@@ -62,18 +67,19 @@ public class Game {
             updateScores ();
         }
 
+        if(isGameOver ())
+            gameOver ();
+
         // toggle turn if the current player has no valid moves
         // show that the player has no valid moves on the UI
         if (this.board.playerHasNoValidMoves ( getCurrentPlayer () )) {
             toggleTurn ();
             updateScores ();
         }
+    }
 
-        // Show that the second player has no valid moves on the UI
-        // if none of the players have a valid move then the game is over
-        if (this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
-            gameOver ();
-
+    private boolean isGameOver () {
+        return isGameOver ( this.board, this.player1, this.player2 );
     }
 
     /**
@@ -99,7 +105,6 @@ public class Game {
      * show the winner on the screen by updating the UI
      */
     private void gameOver () {
-        this.gameOver = true;
         if (this.player1.getScore () > this.player2.getScore ())
             this.gameActivity.showGameResults ( player1 );
         if (this.player2.getScore () > this.player1.getScore ())
@@ -150,9 +155,5 @@ public class Game {
 
     public Color[][] getBoard () {
         return this.board.getBoard ();
-    }
-
-    public boolean isGameOver () {
-        return this.gameOver;
     }
 }
