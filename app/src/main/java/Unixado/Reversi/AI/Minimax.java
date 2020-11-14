@@ -33,11 +33,11 @@ public class Minimax {
 
     private static int runMinimax ( Color[][] node, int depth, int alpha, int beta,
                                     boolean maximizing, Evaluator evaluator, AIPlayer maximizingPlayer ) {
-
         // our base case, when we're at a terminal node
         if (depth == 0 || maximizingPlayer.getGame ().isGameOver ())
             return evaluator.evaluate ( node, maximizingPlayer );
 
+        // TODO: Get the valid moves of the player given the current node
         ArrayList<Move> validMoves = maximizingPlayer.getGame ().findAllValidMoves ( maximizingPlayer );
 
         // skip the move if maximizing player has no valid moves
