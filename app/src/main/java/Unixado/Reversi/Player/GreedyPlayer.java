@@ -7,13 +7,12 @@ import Unixado.Reversi.Game.Move;
 
 import java.util.ArrayList;
 
-public class GreedyPlayer extends AIPlayer {
+public class GreedyPlayer extends ComputerPlayer {
 
     public GreedyPlayer ( Color color, Game game ) {
         super ( color, game );
     }
 
-    @Override
     public Move evaluate () {
         ArrayList<Move> validMoves = this.game.findAllValidMoves ( this );
 

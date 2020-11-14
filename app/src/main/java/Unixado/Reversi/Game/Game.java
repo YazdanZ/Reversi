@@ -30,7 +30,7 @@ public class Game {
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
         this.player1 = new GreedyPlayer ( Color.WHITE, this );
-        this.player2 = new HumanPlayer ( Color.BLACK );
+        this.player2 = new GreedyPlayer ( Color.BLACK, this );
 
         // show the scoreboard for the first time
         updateScoreBoard ();
@@ -48,9 +48,7 @@ public class Game {
     }
 
     public static boolean isGameOver ( Board board, Player player1, Player player2 ) {
-        if (board.findAllValidMoves ( player1 ).size () == 0 && board.findAllValidMoves ( player2 ).size () == 0)
-            return true;
-        return false;
+        return board.findAllValidMoves ( player1 ).size () == 0 && board.findAllValidMoves ( player2 ).size () == 0;
     }
 
     public void addMove ( Move move ) {
@@ -72,7 +70,7 @@ public class Game {
 
         // toggle turn if the current player has no valid moves
         // show that the player has no valid moves on the UI
-        if (this.board.playerHasNoValidMoves ( getCurrentPlayer () )) {
+        else if (this.board.playerHasNoValidMoves ( getCurrentPlayer () )) {
             toggleTurn ();
             updateScores ();
         }
