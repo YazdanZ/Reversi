@@ -38,7 +38,7 @@ public class Minimax {
         ArrayList<Move> validMoves = boardAfterMove.findAllValidMoves ( maximizingPlayer );
 
         // our base case, when we're at a terminal node
-        if (depth == 0 || Game.isGameOver (boardAfterMove, maximizingPlayer, maximizingPlayer.getOpponent ()) )
+        if (depth == 0 || Game.isGameOver ( boardAfterMove, maximizingPlayer, maximizingPlayer.getOpponent () ))
             return evaluator.evaluate ( node, maximizingPlayer );
 
         // skip the move if maximizing player has no valid moves
@@ -59,8 +59,9 @@ public class Minimax {
             }
             return maxEvaluation;
         } else {
+            ArrayList<Move> opponentValidMoves = boardAfterMove.findAllValidMoves ( maximizingPlayer.getOpponent () );
             int minEvaluation = POSITIVE_INFINITY;
-            for (Move move : validMoves) {
+            for (Move move : opponentValidMoves) {
                 Color[][] newNode = Board.getBoardAfterMove ( move, node );
                 int evaluation = runMinimax ( newNode, depth - 1, alpha, beta,
                         true, evaluator, maximizingPlayer );
