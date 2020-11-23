@@ -170,11 +170,15 @@ public class Board {
      * @return game board array
      */
     public Color[][] getBoard () {
-        Color[][] clonedBoard = new Color[this.board.length][];
+        return clone (this.board);
+    }
+
+    public static Color[][] clone(Color[][] board){
+        Color[][] clonedBoard = new Color[board.length][];
 
         // perform a copy
-        for (int i = 0; i < this.board.length; i++)
-            clonedBoard[i] = this.board[i].clone ();
+        for (int i = 0; i < board.length; i++)
+            clonedBoard[i] = board[i].clone ();
 
         return clonedBoard;
     }

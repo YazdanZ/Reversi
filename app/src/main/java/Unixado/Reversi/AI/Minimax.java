@@ -17,12 +17,13 @@ public class Minimax {
         int maxEvaluation = NEGATIVE_INFINITY;
         Move bestMove = null;
         ArrayList<Move> validMoves = maximizingPlayer.getGame ().findAllValidMoves ( maximizingPlayer );
-        Color[][] currentBoard = maximizingPlayer.getGame ().getBoard ();
+        Color[][] currentBoard = Board.clone ( maximizingPlayer.getGame ().getBoard () );
         for (Move move : validMoves) {
             // get child node
             Color[][] newNode = Board.getBoardAfterMove ( move, currentBoard );
+            Board.printBoard ( newNode );
             //evaluate child node
-            int score = runMinimax ( newNode, depth - 1,
+            int score = runMinimax ( Board.clone ( newNode ), depth - 1,
                     NEGATIVE_INFINITY, POSITIVE_INFINITY, false, evaluator, maximizingPlayer );
             if (score > maxEvaluation) {
                 maxEvaluation = score;
@@ -37,23 +38,23 @@ public class Minimax {
         Board boardAfterMove = new Board ( node );
         ArrayList<Move> validMoves = boardAfterMove.findAllValidMoves ( maximizingPlayer );
 
-        // our base case, when we're at a terminal node
+        // our base case, when we're at a leaf
         if (depth == 0 || Game.isGameOver ( boardAfterMove, maximizingPlayer, maximizingPlayer.getOpponent () ))
-            return evaluator.evaluate ( node, maximizingPlayer );
+            return evaluator.evaluate ( Board.clone ( node ) );
 
         // skip the move if maximizing player has no valid moves
         if (maximizing && validMoves.size () == 0) {
-            runMinimax ( node, depth - 1, alpha, beta, false, evaluator, maximizingPlayer );
+            runMinimax ( Board.clone ( node ), depth - 1, alpha, beta, false, evaluator, maximizingPlayer );
         }
 
         if (maximizing) {
             int maxEvaluation = NEGATIVE_INFINITY;
             for (Move move : validMoves) {
-                Color[][] newNode = Board.getBoardAfterMove ( move, node );
-                int evaluation = runMinimax ( newNode, depth - 1, alpha, beta,
+                Color[][] newNode = Board.getBoardAfterMove ( move, Board.clone ( node ) );
+                int evaluation = runMinimax ( Board.clone ( newNode ), depth - 1, alpha, beta,
                         false, evaluator, maximizingPlayer );
                 maxEvaluation = Math.max ( maxEvaluation, evaluation );
-                alpha = Math.max ( alpha, evaluation );
+                alpha = Math.max ( alpha, maxEvaluation );
                 if (beta <= alpha)
                     break;
             }
@@ -62,11 +63,11 @@ public class Minimax {
             ArrayList<Move> opponentValidMoves = boardAfterMove.findAllValidMoves ( maximizingPlayer.getOpponent () );
             int minEvaluation = POSITIVE_INFINITY;
             for (Move move : opponentValidMoves) {
-                Color[][] newNode = Board.getBoardAfterMove ( move, node );
-                int evaluation = runMinimax ( newNode, depth - 1, alpha, beta,
+                Color[][] newNode = Board.getBoardAfterMove ( move, Board.clone ( node ) );
+                int evaluation = runMinimax ( Board.clone ( newNode ), depth - 1, alpha, beta,
                         true, evaluator, maximizingPlayer );
                 minEvaluation = Math.min ( minEvaluation, evaluation );
-                beta = Math.min ( beta, evaluation );
+                beta = Math.min ( beta, minEvaluation );
                 if (beta <= alpha)
                     break;
             }
