@@ -13,7 +13,7 @@ public class StaticMinimaxPlayer extends AIPlayer {
 
     @Override
     public Move evaluate () {
-        return Minimax.findBestMove ( this, 6, new StaticEvaluator (this) );
+        return Minimax.findBestMove ( this, 7, new StaticEvaluator (this) );
     }
 
     @Override

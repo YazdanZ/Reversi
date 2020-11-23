@@ -25,7 +25,7 @@ public class Minimax {
             //evaluate child node
             int score = runMinimax ( Board.clone ( newNode ), depth - 1,
                     NEGATIVE_INFINITY, POSITIVE_INFINITY, false, evaluator, maximizingPlayer );
-            if (score > maxEvaluation) {
+            if (score >= maxEvaluation) {
                 maxEvaluation = score;
                 bestMove = move;
             }

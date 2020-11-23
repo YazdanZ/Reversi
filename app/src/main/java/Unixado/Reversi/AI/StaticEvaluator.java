@@ -6,13 +6,24 @@ import Unixado.Reversi.Player.AIPlayer;
 
 public class StaticEvaluator implements Evaluator {
 
+    private static final int[][] BOARD_POSITION_EVALUATION = {
+            {30, -25, 10, 5, 5, 10, -25, 30,},
+            {-25, -30, 1, 1, 1, 1, -25, -25,},
+            {10, 1, 5, 2, 2, 5, 1, 10,},
+            {5, 1, 2, 1, 1, 2, 1, 5,},
+            {5, 1, 2, 1, 1, 2, 1, 5,},
+            {10, 1, 5, 2, 2, 5, 1, 10,},
+            {-25, -25, 1, 1, 1, 1, -30, -25,},
+            {30, -25, 10, 5, 5, 10, -25, 30,},};
+
+
     AIPlayer maximizingPlayer;
+
 
     public StaticEvaluator ( AIPlayer maximizingPlayer ) {
         this.maximizingPlayer = maximizingPlayer;
     }
 
-    // Number of disks
     // Mobility (number of legal moves - number of opponent's legal moves)
     // always grab corners
     // always chose the move that gives the opponent zero legal moves
@@ -58,19 +69,44 @@ public class StaticEvaluator implements Evaluator {
 
     @Override
     public int evaluate ( Color[][] board ) {
-        return evaluateParity ( board );
+        int evaluation = 0;
+        evaluation += evaluateParity ( board );
+//        evaluation += evaluateMobility ( board );
+        evaluation += evaluatePositions ( board );
+        return evaluation;
     }
 
     /**
      * difference in coins between the max player and the min player.
      */
     private int evaluateParity ( Color[][] board ) {
-
         int playerNumDisks = Board.getNumberOfPlayerDisks ( this.maximizingPlayer, board );
         int opponentNumDisks = Board.getNumberOfPlayerDisks ( this.maximizingPlayer.getOpponent (), board );
 
-        return 100 * (playerNumDisks - opponentNumDisks) / (playerNumDisks + opponentNumDisks);
+        return 1000 * (playerNumDisks - opponentNumDisks) / (playerNumDisks + opponentNumDisks);
     }
+
+    private int evaluateMobility ( Color[][] board ) {
+        Board boardObj = new Board ( board );
+        int playerValidMoves = boardObj.findAllValidMoves ( this.maximizingPlayer ).size ();
+        int opponentValidMoves = boardObj.findAllValidMoves ( this.maximizingPlayer.getOpponent () ).size ();
+
+        return 10 * (playerValidMoves - opponentValidMoves) / (playerValidMoves + opponentValidMoves);
+    }
+
+    private int evaluatePositions ( Color[][] board ) {
+        int evaluation = 0;
+        for (int i = 0; i < 8; i++)
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] == this.maximizingPlayer.getColor ())
+                    evaluation += BOARD_POSITION_EVALUATION[i][j];
+                else if (board[i][j] == this.maximizingPlayer.getOpponent ().getColor ())
+                    evaluation -= BOARD_POSITION_EVALUATION[i][j];
+            }
+
+        return 100 * evaluation;
+    }
+
 
     private enum gameStatus {
         STARTGAME,
