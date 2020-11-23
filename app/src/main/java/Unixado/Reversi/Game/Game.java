@@ -1,9 +1,6 @@
 package Unixado.Reversi.Game;
 
-import Unixado.Reversi.Player.ComputerPlayer;
-import Unixado.Reversi.Player.GreedyPlayer;
-import Unixado.Reversi.Player.HumanPlayer;
-import Unixado.Reversi.Player.Player;
+import Unixado.Reversi.Player.*;
 import Unixado.Reversi.UserInterface.GameActivity;
 
 import java.util.ArrayList;
@@ -29,8 +26,8 @@ public class Game {
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new GreedyPlayer ( Color.WHITE, this );
-        this.player2 = new HumanPlayer ( Color.BLACK );
+        this.player1 = new GreedyPlayer ( Color.BLACK, this );
+        this.player2 = new StaticMinimaxPlayer ( Color.WHITE, this, player1 );
 
         // show the scoreboard for the first time
         updateScoreBoard ();
@@ -47,6 +44,10 @@ public class Game {
             ((ComputerPlayer) player2).takeActionWithDelay ();
     }
 
+    public static boolean isGameOver ( Board board, Player player1, Player player2 ) {
+        return board.findAllValidMoves ( player1 ).size () == 0 && board.findAllValidMoves ( player2 ).size () == 0;
+    }
+
     public void addMove ( Move move ) {
 
         if (move.getPlayer () != getCurrentPlayer ())
@@ -61,18 +62,19 @@ public class Game {
             updateScores ();
         }
 
+        if(isGameOver ())
+            gameOver ();
+
         // toggle turn if the current player has no valid moves
         // show that the player has no valid moves on the UI
-        if (this.board.playerHasNoValidMoves ( getCurrentPlayer () )) {
+        else if (this.board.playerHasNoValidMoves ( getCurrentPlayer () )) {
             toggleTurn ();
             updateScores ();
         }
+    }
 
-        // Show that the second player has no valid moves on the UI
-        // if none of the players have a valid move then the game is over
-        if (this.board.playerHasNoValidMoves ( getCurrentPlayer () ))
-            gameOver ();
-
+    private boolean isGameOver () {
+        return isGameOver ( this.board, this.player1, this.player2 );
     }
 
     /**

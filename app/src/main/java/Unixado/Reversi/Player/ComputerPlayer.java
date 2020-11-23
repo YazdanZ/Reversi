@@ -40,7 +40,7 @@ public abstract class ComputerPlayer extends Player {
      * method with a delay for a more enjoyable user experience
      */
     public void takeActionWithDelay () {
-        int millisInFuture = new Random ().nextInt ( 1000 ) + 1000;
+        int millisInFuture = new Random ().nextInt ( 100 );
 
         new CountDownTimer ( millisInFuture, millisInFuture ) {
 

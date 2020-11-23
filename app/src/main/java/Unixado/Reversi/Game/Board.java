@@ -21,7 +21,7 @@ public class Board {
         initializeBoard ();
     }
 
-    private Board ( Color[][] board ) {
+    public Board ( Color[][] board ) {
         this.board = board;
         this.gameActivity = null;
     }
@@ -170,11 +170,15 @@ public class Board {
      * @return game board array
      */
     public Color[][] getBoard () {
-        Color[][] clonedBoard = new Color[this.board.length][];
+        return clone (this.board);
+    }
+
+    public static Color[][] clone(Color[][] board){
+        Color[][] clonedBoard = new Color[board.length][];
 
         // perform a copy
-        for (int i = 0; i < this.board.length; i++)
-            clonedBoard[i] = this.board[i].clone ();
+        for (int i = 0; i < board.length; i++)
+            clonedBoard[i] = board[i].clone ();
 
         return clonedBoard;
     }
@@ -227,7 +231,7 @@ public class Board {
      * @param col column on the board
      * @return if the position specifies by row and col are on the board
      */
-    private boolean isPositionNotOnBoard ( int row, int col ) {
+    private static boolean isPositionNotOnBoard ( int row, int col ) {
         if (row < 0 || row > 7)
             return true;
         return col < 0 || col > 7;
