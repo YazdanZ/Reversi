@@ -1,5 +1,6 @@
 package Unixado.Reversi.Player;
 
+import Unixado.Reversi.AI.KillerMoveHeuristic;
 import Unixado.Reversi.AI.Minimax;
 import Unixado.Reversi.AI.StaticEvaluator;
 import Unixado.Reversi.Game.Color;
@@ -13,11 +14,14 @@ public class StaticMinimaxPlayer extends AIPlayer {
 
     @Override
     public Move evaluate () {
-        return Minimax.findBestMove ( this, 7, new StaticEvaluator (this) );
+        Move killerMove = KillerMoveHeuristic.getKillerMove ( this );
+        if (killerMove != null)
+            return killerMove;
+        return Minimax.findBestMove ( this, 6, new StaticEvaluator ( this ) );
     }
 
     @Override
     protected void takeAction () {
-        super.takeAction (evaluate ());
+        super.takeAction ( evaluate () );
     }
 }

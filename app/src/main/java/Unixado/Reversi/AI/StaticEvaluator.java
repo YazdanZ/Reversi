@@ -5,17 +5,15 @@ import Unixado.Reversi.Game.Color;
 import Unixado.Reversi.Player.AIPlayer;
 
 public class StaticEvaluator implements Evaluator {
-
     private static final int[][] BOARD_POSITION_EVALUATION = {
-            {30, -25, 10, 5, 5, 10, -25, 30,},
-            {-25, -30, 1, 1, 1, 1, -25, -25,},
-            {10, 1, 5, 2, 2, 5, 1, 10,},
-            {5, 1, 2, 1, 1, 2, 1, 5,},
-            {5, 1, 2, 1, 1, 2, 1, 5,},
-            {10, 1, 5, 2, 2, 5, 1, 10,},
-            {-25, -25, 1, 1, 1, 1, -30, -25,},
-            {30, -25, 10, 5, 5, 10, -25, 30,},};
-
+            {200, -100, 100, 50, 50, 100, -100, 200},
+            {-100, -200, -50, -50, -50, -50, -200, -100},
+            {100, -50, 100, 0, 0, 100, -50, 100},
+            {50, -50, 0, 0, 0, 0, -50, 50},
+            {50, -50, 0, 0, 0, 0, -50, 50},
+            {100, -50, 100, 0, 0, 100, -50, 100},
+            {-100, -200, -50, -50, -50, -50, -200, -100},
+            {200, -100, 100, 50, 50, 100, -100, 200},};
 
     AIPlayer maximizingPlayer;
 
@@ -24,74 +22,50 @@ public class StaticEvaluator implements Evaluator {
         this.maximizingPlayer = maximizingPlayer;
     }
 
-    // Mobility (number of legal moves - number of opponent's legal moves)
-    // always grab corners
-    // always chose the move that gives the opponent zero legal moves
-    // Corners
-    // spots around corners have low evaluation
-    // X tiles are very bad
-    // C squares should be avoided
-    // number of stable disks
-    // number of meta stable disks
-    //potential mobility. Potential mobility can be estimated by simply counting all the opponent's
-    // pieces that are adjacent to an empty field.
-
-
-    // Parity
-    //This component of the utility function captures the difference in coins between the max player and the min player.
-
-    // It attempts to capture the relative difference between the number of possible moves for the max and the min
-    //players, with the intent of restricting the opponent’s mobility and increasing one’s own mobility.
-    // This value is calculated as follows:
-    // if ( Max Player Moves + Min Player Moves != 0)
-
-
-//    if ( Max Player Moves + Min Player Moves != 0)
-//    Mobility Heuristic Value =
-//            100 * (Max Player Moves - Min Player Moves) / (Max Player Moves + Min Player Moves)
-//            else
-//    Mobility Heuristic Value = 0
-//
-    // corners captured:
-    // if ( Max Player Corners + Min Player Corners != 0)
-    //	Corner Heuristic Value =
-    //		100 * (Max Player Corners - Min Player Corners) / (Max Player Corners + Min Player Corners)
-    //else
-    //	Corner Heuristic Value = 0
-
-
-    // Stability
-    // if ( Max Player Stability Value + Min Player Stability Value != 0)
-    //	Stability  Heuristic Value =
-    //		100 * (Max Player Stability Value - Min Player Stability Value) / (Max Player Stability Value + Min Player Stability Value)
-    //else
-    //	Stability Heuristic Value = 0
-
     @Override
     public int evaluate ( Color[][] board ) {
         int evaluation = 0;
-        evaluation += evaluateParity ( board );
-//        evaluation += evaluateMobility ( board );
-        evaluation += evaluatePositions ( board );
+        evaluation += evaluateNumberOfDisks ( board );
+        //evaluation += evaluatePositions ( board );
+        evaluation += 2 * evaluateMobility ( board );
+        evaluation += 100 * evaluateCorners ( board );
+        evaluation += evaluateXTiles ( board );
+//        evaluation += evaluateCTiles ( board );
         return evaluation;
     }
 
     /**
-     * difference in coins between the max player and the min player.
+     * difference in disks between the max player and the min player.
      */
-    private int evaluateParity ( Color[][] board ) {
+    private int evaluateNumberOfDisks ( Color[][] board ) {
         int playerNumDisks = Board.getNumberOfPlayerDisks ( this.maximizingPlayer, board );
         int opponentNumDisks = Board.getNumberOfPlayerDisks ( this.maximizingPlayer.getOpponent (), board );
 
-        return 1000 * (playerNumDisks - opponentNumDisks) / (playerNumDisks + opponentNumDisks);
+        return 100 * (playerNumDisks - opponentNumDisks) / (playerNumDisks + opponentNumDisks);
     }
 
     private int evaluateMobility ( Color[][] board ) {
         Board boardObj = new Board ( board );
         int playerValidMoves = boardObj.findAllValidMoves ( this.maximizingPlayer ).size ();
         int opponentValidMoves = boardObj.findAllValidMoves ( this.maximizingPlayer.getOpponent () ).size ();
+        int totalMoves = playerValidMoves + opponentValidMoves;
+        return 100 * (playerValidMoves - opponentValidMoves) / (totalMoves + 1);
+    }
 
-        return 10 * (playerValidMoves - opponentValidMoves) / (playerValidMoves + opponentValidMoves);
+    private int evaluateCorners ( Color[][] board ) {
+        int playerCorners = 0;
+        int opponentCorners = 0;
+
+        Color[] corners = {board[0][0], board[0][7], board[7][0], board[7][7]};
+        for (Color color : corners) {
+            if (color == this.maximizingPlayer.getColor ())
+                playerCorners++;
+            if (color == this.maximizingPlayer.getOpponent ().getColor ())
+                opponentCorners++;
+        }
+
+        int totalTakenCorners = playerCorners + opponentCorners;
+        return 100 * (playerCorners - opponentCorners) / (totalTakenCorners + 1);
     }
 
     private int evaluatePositions ( Color[][] board ) {
@@ -104,13 +78,55 @@ public class StaticEvaluator implements Evaluator {
                     evaluation -= BOARD_POSITION_EVALUATION[i][j];
             }
 
-        return 100 * evaluation;
+        return evaluation;
     }
 
+    private int evaluateCTiles ( Color[][] board ) {
+        int maximizingPlayerCTiles = 0;
+        int opponentCTiles = 0;
+        Color maximizingPlayerColor = this.maximizingPlayer.getColor ();
+        Color opponentColor = this.maximizingPlayer.getOpponent ().getColor ();
+        Color[] corners = {board[0][0], board[0][7], board[7][0], board[7][7]};
+        Color[][] ctiles =
+                {{board[0][1], board[1][0]},
+                {board[0][6], board[1][7]},
+                {board[6][0], board[7][1]},
+                {board[6][7], board[7][6]}};
 
-    private enum gameStatus {
-        STARTGAME,
-        MIDGAME,
-        ENDGAME
+        for (int i = 0; i < corners.length; i++){
+            if (corners[i] == Color.BLANK && ctiles[i][0] == maximizingPlayerColor)
+                maximizingPlayerCTiles++;
+            if (corners[i] == Color.BLANK && ctiles[i][1] == maximizingPlayerColor)
+                maximizingPlayerCTiles++;
+            if (corners[i] == Color.BLANK && ctiles[i][1] == opponentColor)
+                opponentCTiles++;
+            if (corners[i] == Color.BLANK && ctiles[i][1] == opponentColor)
+                opponentCTiles++;
+        }
+
+        return 100 * (opponentCTiles - maximizingPlayerCTiles) / (opponentCTiles + maximizingPlayerCTiles + 1);
+    }
+
+    /**
+     * X tiles are tiles diagonal to corner tiles, they are unfavourable tiles
+     * because they can give the opponent easy corner captures
+     *
+     * @param board board
+     * @return evaluation
+     */
+    private int evaluateXTiles ( Color[][] board ) {
+        int maximizingPlayerXTiles = 0;
+        int opponentXTiles = 0;
+        Color[] corners = {board[0][0], board[0][7], board[7][0], board[7][7]};
+        Color[] xTiles = {board[1][1], board[1][6], board[6][1], board[6][6]};
+        Color maximizingPlayerColor = this.maximizingPlayer.getColor ();
+        Color opponentColor = this.maximizingPlayer.getOpponent ().getColor ();
+
+        for (int i = 0; i < corners.length; i++){
+            if (corners[i] == Color.BLANK && xTiles[i] == maximizingPlayerColor) maximizingPlayerXTiles++;
+            if (corners[i] == Color.BLANK && xTiles[i] == opponentColor) opponentXTiles++;
+        }
+
+        return 150 * (opponentXTiles - maximizingPlayerXTiles) / (opponentXTiles + maximizingPlayerXTiles + 1);
     }
 }

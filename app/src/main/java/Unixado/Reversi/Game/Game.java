@@ -26,8 +26,8 @@ public class Game {
          possibly the possibility to choose which color goes first
          And the option to choose HumanVSHuman to AIvsHuman or AI vs AI*/
 
-        this.player1 = new GreedyPlayer ( Color.BLACK, this );
-        this.player2 = new StaticMinimaxPlayer ( Color.WHITE, this, player1 );
+        this.player1 = new GreedyPlayer ( Color.WHITE, this );
+        this.player2 = new StaticMinimaxPlayer ( Color.BLACK, this, player1 );
 
         // show the scoreboard for the first time
         updateScoreBoard ();
